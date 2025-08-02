@@ -46,7 +46,7 @@ const PGDetails = ({ pgData }) => {
   const handleBookNow = () => {
     const token = getAccessToken();
     if (!token) {
-      router.push("/auth/login");
+      router.push("/auth/signup");
     } else {
       setIsBookingModalOpen(true);
     }
