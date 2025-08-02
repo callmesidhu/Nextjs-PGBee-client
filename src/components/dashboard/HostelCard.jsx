@@ -27,19 +27,21 @@ const RentDisplay = ({ hostel }) => {
           <h4 className="text-sm font-medium text-gray-700 mb-2">
             Available Options:
           </h4>
-          {hostel.rentOptions.map((rent, index) => (
-            <div
-              key={index}
-              className="flex justify-between items-center p-2 bg-gray-50 rounded-lg"
-            >
-              <span className="text-sm text-gray-600">
-                {formatSharingType(rent.sharingType)}
-              </span>
-              <span className="text-lg font-bold text-gray-900">
-                ₹{rent.price.toLocaleString()}
-              </span>
-            </div>
-          ))}
+          {hostel.rentOptions
+            .sort((a, b) => a.price - b.price) // ascending price sort
+            .map((rent, index) => (
+              <div
+                key={index}
+                className="flex justify-between items-center p-2 bg-gray-50 rounded-lg"
+              >
+                <span className="text-sm text-gray-600">
+                  {formatSharingType(rent.sharingType)}
+                </span>
+                <span className="text-lg font-bold text-gray-900">
+                  ₹{rent.price.toLocaleString()}
+                </span>
+              </div>
+            ))}
         </div>
       ) : (
         <div className="flex items-baseline">

@@ -290,30 +290,23 @@ const PGDetails = ({ pgData }) => {
               <h3 className="text-lg font-semibold text-gray-900 mb-3">
                 Pricing
               </h3>
-              {pgData.rentOptions && pgData.rentOptions.length > 0 ? (
-                <div className="space-y-3">
-                  {pgData.rentOptions.map((rent, index) => (
-                    <div
-                      key={index}
-                      className="flex justify-between items-center p-3 bg-gray-50 rounded-lg"
-                    >
-                      <span className="text-sm text-gray-600">
-                        {formatSharingType(rent.sharingType)}
-                      </span>
-                      <span className="text-lg font-bold text-gray-900">
-                        ₹{rent.price.toLocaleString()}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="p-3 bg-gray-50 rounded-lg">
-                  <span className="text-2xl font-bold text-gray-900">
-                    ₹{pgData.price?.toLocaleString()}
-                  </span>
-                  <span className="text-gray-600 ml-1">/month</span>
-                </div>
-              )}
+              {pgData.rentOptions
+  .slice() // avoid mutating original array
+  .sort((a, b) => a.price - b.price)
+  .map((rent, index) => (
+    <div
+      key={index}
+      className="flex justify-between items-center p-3 bg-gray-50 rounded-lg"
+    >
+      <span className="text-sm text-gray-600">
+        {formatSharingType(rent.sharingType)}
+      </span>
+      <span className="text-lg font-bold text-gray-900">
+        ₹{rent.price.toLocaleString()}
+      </span>
+    </div>
+))}
+
             </div>
 
             {/* Action Buttons */}
