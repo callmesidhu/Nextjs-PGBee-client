@@ -1,7 +1,8 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import 'react-toastify/dist/ReactToastify.css';
-import { ToastContainer } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
+import { WishlistProvider } from "@/contexts/WishlistContext";
 import AuthGuard from "../../service/AuthGuard";
 
 const geistSans = Geist({
@@ -24,8 +25,10 @@ export default function RootLayout({ children }) {
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body>
         <AuthGuard>
-          {children}
-          <ToastContainer />
+          <WishlistProvider>
+            {children}
+            <ToastContainer />
+          </WishlistProvider>
         </AuthGuard>
       </body>
     </html>
