@@ -3,6 +3,48 @@ import { useRouter } from "next/navigation";
 import { getAccessToken } from "@/utils/auth";
 import { Icon, ICONS } from "./Icons";
 
+// Function to format sharing type for display
+const formatSharingType = (sharingType) => {
+  const typeMap = {
+    '1-sharing': '1 Sharing',
+    '1-sharing-attached': '1 Sharing (Attached Bath)',
+    '2-sharing': '2 Sharing',
+    '2-sharing-attached': '2 Sharing (Attached Bath)',
+    '3-sharing': '3 Sharing',
+    '3-sharing-attached': '3 Sharing (Attached Bath)',
+    '3+-sharing': '3+ Sharing',
+    '3+-sharing-attached': '3+ Sharing (Attached Bath)',
+  };
+  return typeMap[sharingType] || sharingType;
+};
+
+// Component to display rent options
+const RentDisplay = ({ hostel }) => {
+  return (
+    <div className="mb-4">
+      {hostel.rentOptions && hostel.rentOptions.length > 0 ? (
+        <div className="space-y-2">
+          <h4 className="text-sm font-medium text-gray-700 mb-2">Available Options:</h4>
+          {hostel.rentOptions.map((rent, index) => (
+            <div key={index} className="flex justify-between items-center p-2 bg-gray-50 rounded-lg">
+              <span className="text-sm text-gray-600">
+                {formatSharingType(rent.sharingType)}
+              </span>
+              <span className="text-lg font-bold text-gray-900">
+                ₹{rent.price.toLocaleString()}
+              </span>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="flex items-baseline">
+          <p className="text-lg font-bold text-gray-900">₹{hostel.price.toLocaleString()}</p>
+        </div>
+      )}
+    </div>
+  );
+};
+
 const HostelCard = ({ hostel }) => {
   const [isWishlisted, setIsWishlisted] = useState(false);
   const router = useRouter();
@@ -38,7 +80,6 @@ const HostelCard = ({ hostel }) => {
     router.push(`/${hostel.id}`);
   };
 
-
   return (
     <div className="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col md:flex-row mb-3">
       {/* Image Gallery */}
@@ -72,7 +113,6 @@ const HostelCard = ({ hostel }) => {
         </div>
       </div>
 
-
       {/* Hostel Details */}
       <div className="p-4 flex flex-col flex-grow">
         <h3 className="text-2xl font-bold text-gray-900">{hostel.name}</h3>
@@ -98,11 +138,10 @@ const HostelCard = ({ hostel }) => {
           <span className="text-sm text-gray-600 ml-2">({hostel.reviews} Ratings)</span>
         </div>
 
-        <div className="flex items-baseline mb-4">
-          <p className="text-lg font-bold text-gray-900">₹{hostel.price.toLocaleString()}</p>
-          <p className="text-base text-gray-400 line-through ml-2">₹{hostel.originalPrice.toLocaleString()}</p>
-        </div>
-        <p>gender : {hostel.sex}</p>
+        {/* Updated rent display section */}
+        <RentDisplay hostel={hostel} />
+        
+        <p className="text-sm text-gray-600 mb-2">Gender: {hostel.sex}</p>
         {hostel.phone && (
           <p className="text-sm text-gray-600 mb-2">Phone: {hostel.phone}</p>
         )}

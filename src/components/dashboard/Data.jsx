@@ -43,8 +43,11 @@ const Data = async () => {
       ],
       rating: 0.0,
       reviews: hostel.Reviews?.length || 0,
-      price: hostel.Rents?.[0]?.rent || 0,
-      originalPrice: (hostel.Rents?.[0]?.rent || 0) + 500,
+            rentOptions: hostel.Rents?.map(rent => ({
+        sharingType: rent.sharingType,
+        price: rent.rent
+      })) || [],
+      price: hostel.Rents?.length > 0 ? Math.min(...hostel.Rents.map(r => r.rent)) : 0,
       images: hostel.Files?.map((file) => file.Location) || [],
     }));
     console.log(hostelsRaw)
