@@ -48,6 +48,7 @@ const Data = async () => {
         price: rent.rent
       })) || [],
       price: hostel.Rents?.length > 0 ? Math.min(...hostel.Rents.map(r => r.rent)) : 0,
+
       images: hostel.Files?.map((file) => file.Location) || [],
     }));
     console.log(hostelsRaw)

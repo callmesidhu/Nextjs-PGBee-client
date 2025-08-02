@@ -1,7 +1,11 @@
+"use client";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { getAccessToken } from "@/utils/auth";
 import { Icon, ICONS } from "./Icons";
+import { motion, AnimatePresence } from "framer-motion";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 // Function to format sharing type for display
 const formatSharingType = (sharingType) => {
@@ -18,38 +22,76 @@ const formatSharingType = (sharingType) => {
   return typeMap[sharingType] || sharingType;
 };
 
-// Component to display rent options
+// Component to display rent options with dropdown
 const RentDisplay = ({ hostel }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  if (!hostel.rentOptions || hostel.rentOptions.length === 0) {
+    return (
+      <div className="flex items-baseline mb-2">
+        <p className="text-lg font-bold text-gray-900">
+          ₹{hostel.price.toLocaleString()}
+        </p>
+      </div>
+    );
+  }
+
+  const minRent = Math.min(...hostel.rentOptions.map((r) => r.price));
+  const sortedOptions = hostel.rentOptions.sort((a, b) => a.price - b.price);
+
   return (
-    <div className="mb-4">
-      {hostel.rentOptions && hostel.rentOptions.length > 0 ? (
-        <div className="space-y-2">
-          <h4 className="text-sm font-medium text-gray-700 mb-2">
-            Available Options:
-          </h4>
-          {hostel.rentOptions
-            .sort((a, b) => a.price - b.price) // ascending price sort
-            .map((rent, index) => (
-              <div
-                key={index}
-                className="flex justify-between items-center p-2 bg-gray-50 rounded-lg"
-              >
-                <span className="text-sm text-gray-600">
-                  {formatSharingType(rent.sharingType)}
-                </span>
-                <span className="text-lg font-bold text-gray-900">
-                  ₹{rent.price.toLocaleString()}
-                </span>
-              </div>
-            ))}
+    <div className="space-y-2 mb-2">
+      <h4 className="text-sm font-medium text-gray-700">Available Options:</h4>
+
+      {/* Starting price with toggle */}
+      <div
+        className="flex justify-between items-center p-2 bg-gray-50 rounded-lg cursor-pointer"
+        onClick={() => setIsOpen((prev) => !prev)}
+      >
+        <div className="text-sm text-gray-600">Starting from</div>
+        <div className="flex items-center gap-2">
+          <span className="text-lg font-bold text-gray-900">
+            ₹{minRent.toLocaleString()}
+          </span>
+          {isOpen ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
         </div>
-      ) : (
-        <div className="flex items-baseline">
-          <p className="text-lg font-bold text-gray-900">
-            ₹{hostel.price.toLocaleString()}
-          </p>
-        </div>
-      )}
+      </div>
+
+      {/* Dropdown list */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            className="space-y-1"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            {sortedOptions.map((rent, index) => {
+              const fakeOriginal = rent.price + 1000;
+
+              return (
+                <div
+                  key={index}
+                  className="flex justify-between items-center px-3 py-2 bg-white border border-gray-200 rounded-md shadow-sm hover:bg-gray-50 transition-all"
+                >
+                  <span className="text-sm text-gray-700">
+                    {formatSharingType(rent.sharingType)}
+                  </span>
+                  <div className="flex flex-col text-right">
+                    <span className="text-base font-bold text-green-700">
+                      ₹{rent.price.toLocaleString()}
+                    </span>
+                    <span className="text-xs text-gray-400 line-through">
+                      ₹{fakeOriginal.toLocaleString()}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
@@ -57,27 +99,24 @@ const RentDisplay = ({ hostel }) => {
 const HostelCard = ({ hostel }) => {
   const [isWishlisted, setIsWishlisted] = useState(false);
   const router = useRouter();
+
   const displayedThumbnails = hostel.images.slice(1, 6);
   const remainingImagesCount = hostel.images.length - 6;
-  const displayedAmenities = hostel.amenities.slice(0, 4);
+  const displayedAmenities = hostel.amenities.slice(0);
   const remainingAmenitiesCount = hostel.amenities.length - 4;
 
   const handleBookNow = () => {
     const token = getAccessToken();
     if (!token) {
-      // Redirect to login if not authenticated
       router.push("/auth/login");
     } else {
-      // Proceed with booking logic here
       console.log("Booking hostel:", hostel.name);
-      // You can add your booking logic here
     }
   };
 
   const handleWishlist = () => {
     const token = getAccessToken();
     if (!token) {
-      // Redirect to login if not authenticated
       router.push("/auth/login");
     } else {
       setIsWishlisted(!isWishlisted);
@@ -85,7 +124,6 @@ const HostelCard = ({ hostel }) => {
   };
 
   const handleViewDetails = () => {
-    // Allow viewing details without authentication
     router.push(`/${hostel.id}`);
   };
 
@@ -105,7 +143,8 @@ const HostelCard = ({ hostel }) => {
             }}
           />
         </div>
-        {/* Vertical Thumbnails */}
+
+        {/* Thumbnails */}
         <div className="w-1/4 flex flex-col gap-1 md:h-60">
           {displayedThumbnails.map((img, index) => (
             <div key={index} className="relative h-1/5">
@@ -130,7 +169,7 @@ const HostelCard = ({ hostel }) => {
         </div>
       </div>
 
-      {/* Hostel Details */}
+      {/* Details */}
       <div className="p-4 flex flex-col flex-grow">
         <h3 className="text-2xl font-bold text-gray-900">{hostel.name}</h3>
         <p className="text-lg text-gray-400 mb-2">{hostel.address}</p>
@@ -145,11 +184,6 @@ const HostelCard = ({ hostel }) => {
               {amenity}
             </span>
           ))}
-          {remainingAmenitiesCount > 0 && (
-            <span className="text-sm text-gray-500">
-              + {remainingAmenitiesCount} more
-            </span>
-          )}
         </div>
 
         <div className="flex items-center mb-3">
@@ -162,18 +196,11 @@ const HostelCard = ({ hostel }) => {
           </span>
         </div>
 
-        {/* Updated rent display section */}
+        {/* Rent dropdown */}
         <RentDisplay hostel={hostel} />
 
         <p className="text-sm text-gray-600 mb-2">Gender: {hostel.sex}</p>
-        {hostel.phone && (
-          <p className="text-sm text-gray-600 mb-2">Phone: {hostel.phone}</p>
-        )}
-        <a href={hostel.location} target="_blank">
-          <button className="text-sm text-blue-500 hover:underline focus:outline-none mb-2 text-left">
-            Location
-          </button>
-        </a>
+
         <div className="flex items-center mt-auto">
           <div className="flex items-center space-x-2">
             <button
@@ -181,12 +208,6 @@ const HostelCard = ({ hostel }) => {
               className="px-5 py-2 text-base font-semibold border border-gray-400 text-gray-800 rounded-lg hover:bg-gray-100"
             >
               View Details
-            </button>
-            <button
-              onClick={handleBookNow}
-              className="px-5 py-2 text-base font-semibold bg-gray-900 text-white rounded-lg hover:bg-gray-800"
-            >
-              Book Now
             </button>
           </div>
           <button

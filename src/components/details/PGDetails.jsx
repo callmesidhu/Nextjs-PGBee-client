@@ -286,28 +286,37 @@ const PGDetails = ({ pgData }) => {
         <div className="lg:col-span-1">
           <div className="bg-white rounded-xl shadow-lg p-6 sticky top-4">
             {/* Pricing */}
-            <div className="mb-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-3">
-                Pricing
-              </h3>
-              {pgData.rentOptions
-  .slice() // avoid mutating original array
-  .sort((a, b) => a.price - b.price)
-  .map((rent, index) => (
-    <div
-      key={index}
-      className="flex justify-between items-center p-3 bg-gray-50 rounded-lg"
-    >
-      <span className="text-sm text-gray-600">
-        {formatSharingType(rent.sharingType)}
-      </span>
-      <span className="text-lg font-bold text-gray-900">
-        ₹{rent.price.toLocaleString()}
-      </span>
-    </div>
-))}
+            {/* Pricing */}
+<div className="mb-6">
+  <h3 className="text-lg font-semibold text-gray-900 mb-3">
+    Pricing
+  </h3>
+  {pgData.rentOptions
+    .slice()
+    .sort((a, b) => a.price - b.price)
+    .map((rent, index) => {
+      const fakeOriginal = rent.price + 1000;
+      return (
+        <div
+          key={index}
+          className="flex justify-between items-center p-3 bg-gray-50 rounded-lg shadow-sm hover:bg-gray-100 transition-all mb-2"
+        >
+          <span className="text-sm text-gray-600">
+            {formatSharingType(rent.sharingType)}
+          </span>
+          <div className="flex flex-col text-right">
+            <span className="text-base font-bold text-green-700">
+              ₹{rent.price.toLocaleString()}
+            </span>
+            <span className="text-xs text-gray-400 line-through">
+              ₹{fakeOriginal.toLocaleString()}
+            </span>
+          </div>
+        </div>
+      );
+    })}
+</div>
 
-            </div>
 
             {/* Action Buttons */}
             <div className="space-y-3">

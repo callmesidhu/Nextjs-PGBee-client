@@ -91,8 +91,7 @@ function AppContent() {
               </div>
             ) : (
               <div className="text-center py-8">
-                <p className="text-gray-500 text-lg">No accommodations match your current filters.</p>
-                <p className="text-gray-400 text-sm mt-2">Try adjusting your filters to see more results.</p>
+                <p className="text-gray-500 text-lg">Loading....</p>
               </div>
             )}
           </div>
