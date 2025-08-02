@@ -1,4 +1,5 @@
 import { Icon, ICONS } from "@/components/dashboard/Icons";
+import { useWishlist } from "@/contexts/WishlistContext";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
@@ -6,6 +7,7 @@ import NoSSR from "../NoSSR";
 
 const Navbar = ({ onMenuClick }) => {
   const router = useRouter();
+  const { getTotalItemsCount } = useWishlist();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
@@ -24,13 +26,22 @@ const Navbar = ({ onMenuClick }) => {
     router.push("/auth/login");
   };
 
+  const handleWishlistClick = () => {
+    const token = Cookies.get("accessToken");
+    if (!token) {
+      router.push("/auth/login");
+    } else {
+      router.push("/wishlist");
+    }
+  };
+
   return (
     <nav className="bg-white shadow-sm py-5 px-4 sm:px-6 lg:px-8">
       <div className="container mx-auto flex justify-between items-center">
         {/* Logo */}
         <div className="flex items-center">
           <h1 className="text-3xl font-bold text-gray-800">
-            <img src="/PgBee.png" alt="PgBee Logo" className="h-8" />
+            <img src="/images/logo.png" alt="PgBee Logo" className="h-8" />
           </h1>
         </div>
 
@@ -60,10 +71,18 @@ const Navbar = ({ onMenuClick }) => {
             <Icon path={ICONS.rupee} className="w-5 h-5 mr-1" />
             <span>INR</span>
           </a>
-          <a href="#" className="flex items-center hover:text-gray-900">
+          <button
+            onClick={handleWishlistClick}
+            className="flex items-center hover:text-gray-900 relative"
+          >
             <Icon path={ICONS.heart} className="w-5 h-5 mr-1" />
             <span>Wishlist</span>
-          </a>
+            {isAuthenticated && getTotalItemsCount() > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                {getTotalItemsCount()}
+              </span>
+            )}
+          </button>
           {/* Auth section */}
           <NoSSR>
             {isAuthenticated ? (

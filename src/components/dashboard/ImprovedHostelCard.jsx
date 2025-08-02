@@ -1,12 +1,20 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { getAccessToken } from "@/utils/auth";
 import { Icon, ICONS } from "./Icons";
 import { ASSETS } from "@/utils/assets";
+import { useWishlist } from "@/contexts/WishlistContext";
+import WishlistButton from "@/components/wishlist/WishlistButton";
 
 const ImprovedHostelCard = ({ hostel }) => {
-  const [isWishlisted, setIsWishlisted] = useState(false);
   const router = useRouter();
+  const { toggleWishlist, isInWishlist } = useWishlist();
+  const [isWishlisted, setIsWishlisted] = useState(false);
+
+  // Check if this item is already in wishlist
+  useEffect(() => {
+    setIsWishlisted(isInWishlist(hostel.id));
+  }, [hostel.id, isInWishlist]);
 
   // Get images from hostel data - no fallback to sample images
   const hostelImages = hostel.images || [];
@@ -33,17 +41,20 @@ const ImprovedHostelCard = ({ hostel }) => {
     }
   };
 
+  const handleViewDetails = () => {
+    router.push(`/${hostel.id}`);
+  };
+
   const handleWishlist = () => {
     const token = getAccessToken();
     if (!token) {
       router.push("/auth/login");
     } else {
-      setIsWishlisted(!isWishlisted);
+      const success = toggleWishlist(hostel);
+      if (success) {
+        setIsWishlisted(!isWishlisted);
+      }
     }
-  };
-
-  const handleViewDetails = () => {
-    router.push(`/${hostel.id}`);
   };
 
   // Default amenities for demo - only use backend data
