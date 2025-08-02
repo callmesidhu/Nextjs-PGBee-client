@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import Data from '@/components/dashboard/Data';
-import Footer from '@/components/dashboard/Footer';
-import Header from '@/components/dashboard/Header';
+import Footer from '@/components/common/Footer';
+import Header from '@/components/common/Navbar';
 import HostelCard from '@/components/dashboard/HostelCard';
 import { Icon, ICONS } from '@/components/dashboard/Icons';
 import MobileSidebar from '@/components/dashboard/MobileBar';
