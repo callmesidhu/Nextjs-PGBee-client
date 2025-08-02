@@ -7,7 +7,7 @@ const FiltersSidebar = () => {
 
   // Complete list of amenities
   const allAmenities = [
-    'Free Wifi', 'Washing Machine', 'Open Terrace','Mess Available', 'Kitchen', 
+    'Free Wifi', 'Washing Machine', 'Open Terrace','Mess Available','Electricity Bill Included','Water Bill Included','Kitchen', 
     'Balcony', 'Walking Distance', 'Cleaning Service', 
     'Water Purifier', 'Furnished', 'AC','Parking'
   ];
