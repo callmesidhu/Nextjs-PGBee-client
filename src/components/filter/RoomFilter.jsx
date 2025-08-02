@@ -4,13 +4,15 @@ import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { getAccessToken } from "@/utils/auth";
 import { Icon, ICONS } from "@/components/dashboard/Icons";
+import BookingModal from "@/components/booking/BookingModal";
 
-export default function RoomFilter({ rooms, hostelGender }) {
+export default function RoomFilter({ rooms, hostelGender, pgData }) {
   const router = useRouter();
   // State to manage the user's filter selections
   const [bathroomType, setBathroomType] = useState("Any"); // 'Any', 'Attached', 'Common'
   const [roomType, setRoomType] = useState("Any"); // 'Any', 'Single', '2 Shared', etc.
-  const [genderFilter, setGenderFilter] = useState("Any"); // 'Any', 'Boys', 'Girls'
+  const [selectedRoom, setSelectedRoom] = useState(null);
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
 
   // Get unique room types from the data for the dropdown
   const uniqueRoomTypes = useMemo(() => {
@@ -19,18 +21,18 @@ export default function RoomFilter({ rooms, hostelGender }) {
 
   // Determine available gender options based on hostel gender
   const availableGenderOptions = useMemo(() => {
-    if (!hostelGender) return ["Any", "Boys", "Girls"];
+    if (!hostelGender) return ["Any", "Men", "Women"];
 
     const normalizedGender = hostelGender.toLowerCase();
     if (normalizedGender.includes("male") || normalizedGender.includes("boy")) {
-      return ["Any", "Boys"];
+      return ["Any", "Men"];
     } else if (
       normalizedGender.includes("female") ||
       normalizedGender.includes("girl")
     ) {
-      return ["Any", "Girls"];
+      return ["Any", "Women"];
     }
-    return ["Any", "Boys", "Girls"];
+    return ["Any", "Men", "Women"];
   }, [hostelGender]);
 
   // Filter the rooms based on the selected criteria
@@ -43,19 +45,14 @@ export default function RoomFilter({ rooms, hostelGender }) {
 
       const roomTypeMatch = roomType === "Any" || room.type === roomType;
 
-      // Gender filter logic - in a real app, this would depend on your data structure
-      // For now, we'll show all rooms since gender is typically at hostel level
-      const genderMatch = genderFilter === "Any" || true;
-
-      return bathroomMatch && roomTypeMatch && genderMatch;
+      return bathroomMatch && roomTypeMatch;
     });
-  }, [rooms, bathroomType, roomType, genderFilter]);
+  }, [rooms, bathroomType, roomType]);
 
   // Clear all filters
   const clearAllFilters = () => {
     setBathroomType("Any");
     setRoomType("Any");
-    setGenderFilter("Any");
   };
 
   // Handle room selection with authentication check
@@ -65,9 +62,9 @@ export default function RoomFilter({ rooms, hostelGender }) {
       // Redirect to login if not authenticated
       router.push("/auth/login");
     } else {
-      // Proceed with room selection logic here
-      console.log("Selecting room:", room);
-      // You can add your room selection logic here
+      // Open booking modal with selected room
+      setSelectedRoom(room);
+      setIsBookingModalOpen(true);
     }
   };
 
@@ -75,10 +72,9 @@ export default function RoomFilter({ rooms, hostelGender }) {
   const getGenderDisplayText = (gender) => {
     if (!gender) return "Mixed";
     const normalized = gender.toLowerCase();
-    if (normalized.includes("male") || normalized.includes("boy"))
-      return "Boys";
+    if (normalized.includes("male") || normalized.includes("boy")) return "Men";
     if (normalized.includes("female") || normalized.includes("girl"))
-      return "Girls";
+      return "Women";
     return gender;
   };
 
@@ -89,9 +85,9 @@ export default function RoomFilter({ rooms, hostelGender }) {
         {hostelGender && (
           <span
             className={`px-3 py-1 rounded-full text-sm font-medium ${
-              hostelGender === "Male" || hostelGender === "Boys"
+              hostelGender === "Male" || hostelGender === "Men"
                 ? "bg-blue-100 text-blue-800"
-                : hostelGender === "Female" || hostelGender === "Girls"
+                : hostelGender === "Female" || hostelGender === "Women"
                 ? "bg-pink-100 text-pink-800"
                 : "bg-gray-100 text-gray-800"
             }`}
@@ -105,30 +101,6 @@ export default function RoomFilter({ rooms, hostelGender }) {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column: Filter Controls */}
         <div className="lg:col-span-1 space-y-6">
-          {/* Gender Filter - Only show if there are multiple options */}
-          {availableGenderOptions.length > 1 && (
-            <div>
-              <label
-                htmlFor="gender-filter"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
-                Gender Preference
-              </label>
-              <select
-                id="gender-filter"
-                value={genderFilter}
-                onChange={(e) => setGenderFilter(e.target.value)}
-                className="w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-black focus:border-black sm:text-sm rounded-md border"
-              >
-                {availableGenderOptions.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
-
           {/* Bathroom Type Filter */}
           <div>
             <label
@@ -179,15 +151,8 @@ export default function RoomFilter({ rooms, hostelGender }) {
             <p className="text-sm text-gray-600 mb-2">
               Showing {filteredRooms.length} of {rooms.length} room types
             </p>
-            {(bathroomType !== "Any" ||
-              roomType !== "Any" ||
-              genderFilter !== "Any") && (
+            {(bathroomType !== "Any" || roomType !== "Any") && (
               <div className="space-y-1">
-                {genderFilter !== "Any" && (
-                  <p className="text-xs text-gray-500">
-                    Gender: {genderFilter}
-                  </p>
-                )}
                 {bathroomType !== "Any" && (
                   <p className="text-xs text-gray-500">
                     Bathroom: {bathroomType}
@@ -239,7 +204,7 @@ export default function RoomFilter({ rooms, hostelGender }) {
                     {hostelGender && (
                       <span
                         className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                          hostelGender === "Male" || hostelGender === "Boys"
+                          hostelGender === "Male" || hostelGender === "Men"
                             ? "bg-blue-100 text-blue-800"
                             : "bg-pink-100 text-pink-800"
                         }`}
@@ -296,6 +261,14 @@ export default function RoomFilter({ rooms, hostelGender }) {
           )}
         </div>
       </div>
+
+      {/* Booking Modal */}
+      <BookingModal
+        isOpen={isBookingModalOpen}
+        onClose={() => setIsBookingModalOpen(false)}
+        pgData={pgData}
+        selectedRoom={selectedRoom}
+      />
     </section>
   );
 }
