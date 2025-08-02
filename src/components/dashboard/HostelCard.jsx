@@ -53,32 +53,32 @@ const HostelCard = ({ hostel }) => {
   const displayedAmenities = hostel.amenities.slice(0, 4);
   const remainingAmenitiesCount = hostel.amenities.length - 4;
 
-  const handleBookNow = () => {
-    const token = getAccessToken();
-    if (!token) {
-      // Redirect to login if not authenticated
-      router.push('/auth/login');
-    } else {
-      // Proceed with booking logic here
-      console.log('Booking hostel:', hostel.name);
-      // You can add your booking logic here
-    }
-  };
+  // const handleBookNow = () => {
+  //   const token = getAccessToken();
+  //   if (!token) {
+  //     // Redirect to login if not authenticated
+  //     router.push('/auth/login');
+  //   } else {
+  //     // Proceed with booking logic here
+  //     console.log('Booking hostel:', hostel.name);
+  //     // You can add your booking logic here
+  //   }
+  // };
 
-  const handleWishlist = () => {
-    const token = getAccessToken();
-    if (!token) {
-      // Redirect to login if not authenticated
-      router.push('/auth/login');
-    } else {
-      setIsWishlisted(!isWishlisted);
-    }
-  };
+  // const handleWishlist = () => {
+  //   const token = getAccessToken();
+  //   if (!token) {
+  //     // Redirect to login if not authenticated
+  //     router.push('/auth/login');
+  //   } else {
+  //     setIsWishlisted(!isWishlisted);
+  //   }
+  // };
 
-  const handleViewDetails = () => {
-    // Allow viewing details without authentication
-    router.push(`/${hostel.id}`);
-  };
+  // const handleViewDetails = () => {
+  //   // Allow viewing details without authentication
+  //   router.push(`/${hostel.id}`);
+  // };
 
   return (
     <div className="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col md:flex-row mb-3">
@@ -151,20 +151,17 @@ const HostelCard = ({ hostel }) => {
         <div className="flex items-center mt-auto">
           <div className="flex items-center space-x-2">
             <button 
-              onClick={handleViewDetails}
               className="px-5 py-2 text-base font-semibold border border-gray-400 text-gray-800 rounded-lg hover:bg-gray-100"
             >
               View Details
             </button>
             <button 
-              onClick={handleBookNow}
               className="px-5 py-2 text-base font-semibold bg-gray-900 text-white rounded-lg hover:bg-gray-800"
             >
               Book Now
             </button>
           </div>
           <button 
-            onClick={handleWishlist} 
             className="ml-auto p-2 border border-gray-300 rounded-full hover:bg-gray-100"
           >
             <Icon path={ICONS.heart} className={`w-6 h-6 ${isWishlisted ? 'text-red-500' : 'text-gray-400'}`} />

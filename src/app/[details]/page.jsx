@@ -2,9 +2,9 @@ import React from 'react'
 
 export default function page() {
   return (
-    <div>
+    <div className='flex flex-1 justify-center w-full'>
 
-      {/* import details component from /components/details/Footer.jsx */}
+   Will be Available later
     </div>
   )
 }
