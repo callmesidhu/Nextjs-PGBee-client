@@ -53,13 +53,13 @@ const Navbar = ({
   };
 
   const handleLoginSignup = () => {
-    router.push("/auth/login");
+    router.push("/auth/signup");
   };
 
   const handleWishlistClick = () => {
     const token = Cookies.get("accessToken");
     if (!token) {
-      router.push("/auth/login");
+      router.push("/auth/signup");
     } else {
       router.push("/wishlist");
     }
@@ -149,6 +149,7 @@ const Navbar = ({
             <Icon path={ICONS.rupee} className="w-5 h-5 mr-1" />
             <span>INR</span>
           </a>
+          {/* Wishlist temporarily commented out */}
           {/* <button
             onClick={handleWishlistClick}
             className="flex items-center hover:text-gray-900 relative"
@@ -162,7 +163,7 @@ const Navbar = ({
             )}
           </button> */}
           {/* Auth section */}
-          {/* <NoSSR>
+          <NoSSR>
             {isAuthenticated ? (
               <button
                 className="p-5 flex items-center cursor-pointer"
@@ -180,7 +181,7 @@ const Navbar = ({
                 <span>Login/Signup</span>
               </button>
             )}
-          </NoSSR> */}
+          </NoSSR>
         </nav>
 
         {/* Mobile Search Bar - Only show if showSearch is true */}

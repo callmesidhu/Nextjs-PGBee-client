@@ -59,8 +59,8 @@ export default function RoomFilter({ rooms, hostelGender, pgData }) {
   const handleSelectRoom = (room) => {
     const token = getAccessToken();
     if (!token) {
-      // Redirect to login if not authenticated
-      router.push("/auth/login");
+      // Redirect to signup if not authenticated
+      router.push("/auth/signup");
     } else {
       // Open booking modal with selected room
       setSelectedRoom(room);
