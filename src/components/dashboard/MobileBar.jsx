@@ -24,7 +24,7 @@ const MobileSidebar = ({ isOpen, onClose }) => {
   };
 
   const handleLoginSignup = () => {
-    router.push("/auth/login");
+    router.push("/auth/signup");
     onClose(); // Close the sidebar after navigation
   };
 
@@ -32,7 +32,7 @@ const MobileSidebar = ({ isOpen, onClose }) => {
     const token = Cookies.get("accessToken");
     if (!token) {
       onClose();
-      router.push("/auth/login");
+      router.push("/auth/signup");
     } else {
       onClose();
       router.push("/wishlist");

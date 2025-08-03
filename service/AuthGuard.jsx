@@ -31,9 +31,9 @@ export default function AuthGuard({ children }) {
       return;
     }
 
-    // If user is not authenticated and tries to access any route except auth pages, redirect to login
+    // If user is not authenticated and tries to access any route except auth pages, redirect to signup
     if (!token && !publicRoutes.includes(pathname)) {
-      router.push("/auth/login");
+      router.push("/auth/signup");
       return;
     }
   }, [pathname, isMounted, router]);

@@ -105,7 +105,7 @@ const HostelCard = ({ hostel }) => {
   const handleBookNow = () => {
     const token = getAccessToken();
     if (!token) {
-      router.push("/auth/login");
+      router.push("/auth/signup");
     } else {
       console.log("Booking hostel:", hostel.name);
     }
@@ -114,7 +114,7 @@ const HostelCard = ({ hostel }) => {
   const handleWishlist = () => {
     const token = getAccessToken();
     if (!token) {
-      router.push("/auth/login");
+      router.push("/auth/signup");
     } else {
       setIsWishlisted(!isWishlisted);
     }

@@ -62,8 +62,8 @@ export default function RoomFilter({ rooms, hostelGender }) {
   const handleSelectRoom = (room) => {
     const token = getAccessToken();
     if (!token) {
-      // Redirect to login if not authenticated
-      router.push("/auth/login");
+      // Redirect to signup if not authenticated
+      router.push("/auth/signup");
     } else {
       // Proceed with room selection logic here
       console.log("Selecting room:", room);
