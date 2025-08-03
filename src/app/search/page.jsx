@@ -86,6 +86,7 @@ const SearchResultsContent = () => {
         hostels={hostels}
         onSearch={handleNavbarSearch}
         initialSearchQuery={searchQuery}
+        showSearch={true}
       />
 
       <div className="container mx-auto px-4 py-6">

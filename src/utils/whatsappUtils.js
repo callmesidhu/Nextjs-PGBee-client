@@ -6,7 +6,6 @@ function encodeForWhatsApp(text) {
 // Generate WhatsApp message template
 export function generateWhatsAppMessage(bookingData) {
   const {
-    referralCode = "PGB100",
     name = "",
     department = "",
     phone = "",
@@ -18,8 +17,7 @@ export function generateWhatsAppMessage(bookingData) {
     ownerPhone = "",
   } = bookingData;
 
-  let message = `Referral Code: ${referralCode}\n`;
-  message += `Name: ${name}\n`;
+  let message = `Name: ${name}\n`;
   message += `Department: ${department}\n`;
   message += `Phone: ${phone}\n`;
   message += `Hostel Name: ${hostelName}\n`;

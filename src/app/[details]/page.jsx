@@ -146,7 +146,7 @@ export default function PGDetailsPage() {
   if (loading) {
     return (
       <div className="bg-gray-50 min-h-screen font-sans flex flex-col">
-        <Navbar onMenuClick={() => setIsMenuOpen(true)} />
+        <Navbar onMenuClick={() => setIsMenuOpen(true)} showSearch={false} />
         <MobileSidebar
           isOpen={isMenuOpen}
           onClose={() => setIsMenuOpen(false)}
@@ -168,7 +168,7 @@ export default function PGDetailsPage() {
   if (error || !pgData) {
     return (
       <div className="bg-gray-50 min-h-screen font-sans flex flex-col">
-        <Navbar onMenuClick={() => setIsMenuOpen(true)} />
+        <Navbar onMenuClick={() => setIsMenuOpen(true)} showSearch={false} />
         <MobileSidebar
           isOpen={isMenuOpen}
           onClose={() => setIsMenuOpen(false)}
@@ -195,7 +195,7 @@ export default function PGDetailsPage() {
 
   return (
     <div className="bg-gray-50 min-h-screen font-sans flex flex-col">
-      <Navbar onMenuClick={() => setIsMenuOpen(true)} />
+      <Navbar onMenuClick={() => setIsMenuOpen(true)} showSearch={false} />
       <MobileSidebar isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
 
       <main className="flex-grow">
