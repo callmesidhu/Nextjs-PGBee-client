@@ -22,7 +22,6 @@ const formatSharingType = (sharingType) => {
   return typeMap[sharingType] || sharingType;
 };
 
-// Component to display rent options with dropdown
 const RentDisplay = ({ hostel }) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -69,7 +68,6 @@ const RentDisplay = ({ hostel }) => {
           >
             {sortedOptions.map((rent, index) => {
               const fakeOriginal = rent.price + 1000;
-
               return (
                 <div
                   key={index}
@@ -103,7 +101,6 @@ const HostelCard = ({ hostel }) => {
   const displayedThumbnails = hostel.images.slice(1, 6);
   const remainingImagesCount = hostel.images.length - 6;
   const displayedAmenities = hostel.amenities.slice(0);
-  const remainingAmenitiesCount = hostel.amenities.length - 4;
 
   const handleBookNow = () => {
     const token = getAccessToken();
@@ -129,14 +126,14 @@ const HostelCard = ({ hostel }) => {
 
   return (
     <div className="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col md:flex-row mb-3">
-      {/* Image Gallery */}
-      <div className="w-full md:w-2/5 md:h-70 flex-shrink-0 flex gap-1 p-2">
+      {/* Image Section */}
+      <div className="w-full md:w-2/5 p-2 flex flex-col">
         {/* Main Image */}
-        <div className="w-3/4">
+        <div>
           <img
             src={hostel.images[0]}
             alt={hostel.name}
-            className="w-full h-48 md:h-65 object-cover rounded-xl"
+            className="w-full h-48 md:h-64 object-cover rounded-xl"
             onError={(e) => {
               e.target.onerror = null;
               e.target.src = "https://placehold.co/300x300?text=Error";
@@ -144,14 +141,14 @@ const HostelCard = ({ hostel }) => {
           />
         </div>
 
-        {/* Thumbnails */}
-        <div className="w-1/4 flex flex-col gap-1 md:h-60">
+        {/* Horizontal Thumbnails */}
+        <div className="mt-2 flex gap-5 overflow-x-auto">
           {displayedThumbnails.map((img, index) => (
-            <div key={index} className="relative h-1/5">
+            <div key={index} className="relative w-24 h-16 ">
               <img
                 src={img}
                 alt={`${hostel.name} thumbnail ${index + 2}`}
-                className="w-full h-full object-cover rounded-lg cursor-pointer"
+                className="w-full h-full object-cover rounded-lg"
                 onError={(e) => {
                   e.target.onerror = null;
                   e.target.src = "https://placehold.co/100x100?text=Error";
@@ -159,7 +156,7 @@ const HostelCard = ({ hostel }) => {
               />
               {index === 4 && remainingImagesCount > 0 && (
                 <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center rounded-lg cursor-pointer">
-                  <span className="text-white text-lg font-bold">
+                  <span className="text-white text-sm font-bold">
                     +{remainingImagesCount}
                   </span>
                 </div>
@@ -169,7 +166,7 @@ const HostelCard = ({ hostel }) => {
         </div>
       </div>
 
-      {/* Details */}
+      {/* Details Section */}
       <div className="p-4 flex flex-col flex-grow">
         <h3 className="text-2xl font-bold text-gray-900">{hostel.name}</h3>
         <p className="text-lg text-gray-400 mb-2">{hostel.address}</p>

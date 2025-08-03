@@ -71,7 +71,7 @@ const Navbar = ({ onMenuClick }) => {
             <Icon path={ICONS.rupee} className="w-5 h-5 mr-1" />
             <span>INR</span>
           </a>
-          <button
+          {/* <button
             onClick={handleWishlistClick}
             className="flex items-center hover:text-gray-900 relative"
           >
@@ -82,9 +82,9 @@ const Navbar = ({ onMenuClick }) => {
                 {getTotalItemsCount()}
               </span>
             )}
-          </button>
+          </button> */}
           {/* Auth section */}
-          <NoSSR>
+          {/* <NoSSR>
             {isAuthenticated ? (
               <button
                 className="p-5 flex items-center cursor-pointer"
@@ -102,7 +102,7 @@ const Navbar = ({ onMenuClick }) => {
                 <span>Login/Signup</span>
               </button>
             )}
-          </NoSSR>
+          </NoSSR> */}
         </nav>
 
         {/* Mobile Menu Toggle */}

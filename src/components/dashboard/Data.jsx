@@ -20,6 +20,7 @@ const Data = async () => {
     const transformedData = hostelsRaw.map((hostel) => ({
       id: hostel.id,
       name: hostel.hostelName,
+      available: hostel.available,
       address: hostel.address,
       location: hostel.location,
       phone: hostel.phone,

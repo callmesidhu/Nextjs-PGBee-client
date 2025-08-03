@@ -44,12 +44,7 @@ const PGDetails = ({ pgData }) => {
   };
 
   const handleBookNow = () => {
-    const token = getAccessToken();
-    if (!token) {
-      router.push("/auth/login");
-    } else {
       setIsBookingModalOpen(true);
-    }
   };
 
   const handleWishlist = () => {
@@ -154,7 +149,7 @@ const PGDetails = ({ pgData }) => {
                           key={index}
                           src={image}
                           alt={`${pgData.name} - Thumbnail ${index + 1}`}
-                          className={`w-20 h-20 object-cover rounded-lg cursor-pointer flex-shrink-0 ${
+                          className={`h-20 w-40 object-cover rounded-lg cursor-pointer ${
                             selectedImageIndex === index
                               ? "ring-2 ring-blue-500"
                               : ""
