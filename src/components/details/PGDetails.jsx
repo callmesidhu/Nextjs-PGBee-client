@@ -30,7 +30,7 @@ const PGDetails = ({ pgData }) => {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
 
-  // Handle scroll to show/hide scroll-to-top button
+  // Show scroll-to-top button
   useEffect(() => {
     const handleScroll = () => {
       setShowScrollTop(window.scrollY > 300);
@@ -49,6 +49,7 @@ const PGDetails = ({ pgData }) => {
       router.push("/auth/login");
     } else {
       setIsBookingModalOpen(true);
+    }
   };
 
   const handleWishlist = () => {
@@ -107,15 +108,14 @@ const PGDetails = ({ pgData }) => {
         </button>
       </div>
 
-      {/* Main content */}
+      {/* Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Left column - Images and main info */}
+        {/* Left column */}
         <div className="lg:col-span-2">
-          {/* Image Gallery */}
+          {/* Image gallery */}
           <div className="bg-white rounded-xl shadow-lg overflow-hidden mb-6">
             {pgData.images && pgData.images.length > 0 ? (
               <>
-                {/* Main Image */}
                 <div className="relative h-96">
                   <img
                     src={pgData.images[selectedImageIndex]}
@@ -144,29 +144,26 @@ const PGDetails = ({ pgData }) => {
                   )}
                 </div>
 
-                {/* Thumbnail Gallery */}
-                {pgData.images.length > 1 && (
-                  <div className="p-4">
-                    <div className="flex space-x-2 overflow-x-auto">
-                      {pgData.images.map((image, index) => (
-                        <img
-                          key={index}
-                          src={image}
-                          alt={`${pgData.name} - Thumbnail ${index + 1}`}
-                          className={`h-20 w-40 object-cover rounded-lg cursor-pointer ${
-                            selectedImageIndex === index
-                              ? "ring-2 ring-blue-500"
-                              : ""
-                          }`}
-                          onClick={() => setSelectedImageIndex(index)}
-                          onError={(e) => {
-                            e.target.src = "/images/placeholder-hostel.jpg";
-                          }}
-                        />
-                      ))}
-                    </div>
+                <div className="p-4">
+                  <div className="flex space-x-2 overflow-x-auto">
+                    {pgData.images.map((image, index) => (
+                      <img
+                        key={index}
+                        src={image}
+                        alt={`Thumbnail ${index + 1}`}
+                        className={`h-20 w-40 object-cover rounded-lg cursor-pointer ${
+                          selectedImageIndex === index
+                            ? "ring-2 ring-blue-500"
+                            : ""
+                        }`}
+                        onClick={() => setSelectedImageIndex(index)}
+                        onError={(e) => {
+                          e.target.src = "/images/placeholder-hostel.jpg";
+                        }}
+                      />
+                    ))}
                   </div>
-                )}
+                </div>
               </>
             ) : (
               <div className="h-96 flex items-center justify-center bg-gray-200">
@@ -175,14 +172,13 @@ const PGDetails = ({ pgData }) => {
             )}
           </div>
 
-          {/* PG Information */}
-          <div className="bg-white rounded-xl shadow-lg p-6 ">
+          {/* Info box */}
+          <div className="bg-white rounded-xl shadow-lg p-6">
             <h1 className="text-3xl font-bold text-gray-900 mb-6">
               {pgData.name}
             </h1>
-            {/* <p className="text-lg text-gray-600 mb-4">{pgData.address}</p> */}
 
-            {/* Rating */}
+            {/* Ratings */}
             <div className="flex items-center mb-6">
               <span className="bg-yellow-400 text-black text-sm font-bold px-3 py-1 rounded flex items-center">
                 {pgData.rating}
@@ -228,6 +224,7 @@ const PGDetails = ({ pgData }) => {
                 </div>
               </div>
 
+              {/* Location */}
               {pgData.location && (
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900 mb-3">
@@ -270,7 +267,7 @@ const PGDetails = ({ pgData }) => {
                     <div key={index} className="flex items-center">
                       <Icon
                         path={ICONS.checkCircle}
-                        className="w-5 h-5 text-green-500 mr-2 flex-shrink-0"
+                        className="w-5 h-5 text-green-500 mr-2"
                       />
                       <span className="text-gray-700">{amenity}</span>
                     </div>
@@ -281,51 +278,48 @@ const PGDetails = ({ pgData }) => {
           </div>
         </div>
 
-        {/* Right column - Pricing and booking */}
+        {/* Right column */}
         <div className="lg:col-span-1">
           <div className="bg-white rounded-xl shadow-lg p-6 sticky top-4">
             {/* Pricing */}
-            {/* Pricing */}
-<div className="mb-6">
-  <h3 className="text-lg font-semibold text-gray-900 mb-3">
-    Pricing
-  </h3>
-  {pgData.rentOptions
-    .slice()
-    .sort((a, b) => a.price - b.price)
-    .map((rent, index) => {
-      const fakeOriginal = rent.price + 1000;
-      return (
-        <div
-          key={index}
-          className="flex justify-between items-center p-3 bg-gray-50 rounded-lg shadow-sm hover:bg-gray-100 transition-all mb-2"
-        >
-          <span className="text-sm text-gray-600">
-            {formatSharingType(rent.sharingType)}
-          </span>
-          <div className="flex flex-col text-right">
-            <span className="text-base font-bold text-green-700">
-              ₹{rent.price.toLocaleString()}
-            </span>
-            <span className="text-xs text-gray-400 line-through">
-              ₹{fakeOriginal.toLocaleString()}
-            </span>
-          </div>
-        </div>
-      );
-    })}
-</div>
+            <div className="mb-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                Pricing
+              </h3>
+              {pgData.rentOptions
+                .slice()
+                .sort((a, b) => a.price - b.price)
+                .map((rent, index) => {
+                  const fakeOriginal = rent.price + 1000;
+                  return (
+                    <div
+                      key={index}
+                      className="flex justify-between items-center p-3 bg-gray-50 rounded-lg shadow-sm hover:bg-gray-100 transition-all mb-2"
+                    >
+                      <span className="text-sm text-gray-600">
+                        {formatSharingType(rent.sharingType)}
+                      </span>
+                      <div className="flex flex-col text-right">
+                        <span className="text-base font-bold text-green-700">
+                          ₹{rent.price.toLocaleString()}
+                        </span>
+                        <span className="text-xs text-gray-400 line-through">
+                          ₹{fakeOriginal.toLocaleString()}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+            </div>
 
-
-            {/* Action Buttons */}
+            {/* Actions */}
             <div className="space-y-3">
               <button
                 onClick={handleBookNow}
-                className="w-full bg-gray-900 text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors"
+                className="w-full bg-gray-900 text-white py-3 rounded-lg font-semibold hover:bg-gray-800"
               >
                 Book Inquiry
               </button>
-
               <button
                 onClick={handleWishlist}
                 className={`w-full border-2 py-3 rounded-lg font-semibold transition-colors ${
@@ -357,7 +351,6 @@ const PGDetails = ({ pgData }) => {
             >
               <Icon path={ICONS.close} className="w-8 h-8" />
             </button>
-
             <img
               src={pgData.images[selectedImageIndex]}
               alt={`${pgData.name} - Full size`}
@@ -366,7 +359,6 @@ const PGDetails = ({ pgData }) => {
                 e.target.src = "/images/placeholder-hostel.jpg";
               }}
             />
-
             {pgData.images.length > 1 && (
               <>
                 <button
@@ -383,7 +375,6 @@ const PGDetails = ({ pgData }) => {
                 </button>
               </>
             )}
-
             <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-white">
               {selectedImageIndex + 1} / {pgData.images.length}
             </div>
@@ -391,7 +382,7 @@ const PGDetails = ({ pgData }) => {
         </div>
       )}
 
-      {/* Scroll to top button */}
+      {/* Scroll to top */}
       {showScrollTop && (
         <button
           onClick={scrollToTop}
@@ -402,7 +393,7 @@ const PGDetails = ({ pgData }) => {
         </button>
       )}
 
-      {/* Booking Modal */}
+      {/* Booking modal */}
       <BookingModal
         isOpen={isBookingModalOpen}
         onClose={() => setIsBookingModalOpen(false)}
