@@ -2,13 +2,42 @@ import { Icon, ICONS } from "@/components/dashboard/Icons";
 import { useWishlist } from "@/contexts/WishlistContext";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import NoSSR from "../NoSSR";
+import SearchBar from "@/components/search/SearchBar";
+import MobileSearchBar from "@/components/search/MobileSearchBar";
+import { useSearch } from "@/hooks/useSearch";
 
-const Navbar = ({ onMenuClick }) => {
+const Navbar = ({
+  onMenuClick,
+  hostels = [],
+  onSearch,
+  initialSearchQuery = "",
+}) => {
   const router = useRouter();
   const { getTotalItemsCount } = useWishlist();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  // Search functionality
+  const {
+    searchQuery,
+    suggestions,
+    showSuggestions,
+    isLoading,
+    handleInputChange,
+    handleSearch,
+    handleSuggestionClick,
+    handleNearMeSearch,
+    setShowSuggestions,
+    setSearchQuery,
+  } = useSearch(hostels);
+
+  // Set initial search query if provided
+  useEffect(() => {
+    if (initialSearchQuery && initialSearchQuery !== searchQuery) {
+      setSearchQuery(initialSearchQuery);
+    }
+  }, [initialSearchQuery, setSearchQuery, searchQuery]);
 
   useEffect(() => {
     const token = Cookies.get("accessToken");
@@ -35,6 +64,38 @@ const Navbar = ({ onMenuClick }) => {
     }
   };
 
+  const handleSearchSubmit = (query) => {
+    console.log("🔍 Navbar search submit:", query); // Debug log
+    const searchTerm = handleSearch(query);
+
+    if (onSearch) {
+      // If parent component provides search handler, use it
+      onSearch(searchTerm);
+    } else if (searchTerm && searchTerm.trim()) {
+      // Otherwise, navigate to search page
+      const searchParams = new URLSearchParams();
+      searchParams.set("search", searchTerm.trim());
+      router.push(`/search?${searchParams.toString()}`);
+    } else {
+      // If empty search, go to main page or clear search
+      onSearch && onSearch("");
+    }
+  };
+
+  const handleNearMeClick = async () => {
+    const nearMeQuery = await handleNearMeSearch();
+
+    if (nearMeQuery) {
+      if (onSearch) {
+        onSearch(nearMeQuery);
+      } else {
+        const searchParams = new URLSearchParams();
+        searchParams.set("search", nearMeQuery);
+        router.push(`/search?${searchParams.toString()}`);
+      }
+    }
+  };
+
   return (
     <nav className="bg-white shadow-sm py-5 px-4 sm:px-6 lg:px-8">
       <div className="container mx-auto flex justify-between items-center">
@@ -46,20 +107,34 @@ const Navbar = ({ onMenuClick }) => {
         </div>
 
         {/* Search Bar */}
-        <div className="max-w-xl mx-4 hidden sm:flex items-center border rounded-full shadow-sm">
-          <input
-            type="text"
-            placeholder="Bangalore, India"
-            className="w-full py-2 pl-3 pr-4 lg:px-4 rounded-l-full focus:outline-none"
-          />
-          <button className="flex items-center bg-gray-100 text-gray-600 px-4 py-1.5 rounded-full mx-2 whitespace-nowrap text-sm hover:bg-gray-200">
-            <Icon path={ICONS.nearMe} className="w-4 h-4 mr-1" />
-            Near me
-          </button>
-          <button className="px-6 py-2 bg-gray-800 text-white rounded-2xl hover:bg-gray-700 font-semibold">
-            Search
-          </button>
-        </div>
+        <SearchBar
+          searchQuery={searchQuery}
+          suggestions={suggestions}
+          showSuggestions={showSuggestions}
+          onInputChange={handleInputChange}
+          onSearch={(searchTerm) => {
+            handleSearchSubmit(searchTerm);
+            if (onSearch) {
+              onSearch(searchTerm);
+            }
+          }}
+          onSuggestionClick={(suggestion) => {
+            const searchTerm = handleSuggestionClick(suggestion);
+            handleSearchSubmit(searchTerm);
+            if (onSearch) {
+              onSearch(searchTerm);
+            }
+          }}
+          onFocus={() => {
+            if (searchQuery.trim()) {
+              setShowSuggestions(true);
+            }
+          }}
+          onBlur={() => setShowSuggestions(false)}
+          onNearMeClick={handleNearMeClick}
+          isLoading={isLoading}
+          placeholder="Bangalore, India"
+        />
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center space-x-4 text-sm font-medium text-gray-600">
@@ -104,6 +179,36 @@ const Navbar = ({ onMenuClick }) => {
             )}
           </NoSSR>
         </nav>
+
+        {/* Mobile Search Bar */}
+        <MobileSearchBar
+          searchQuery={searchQuery}
+          suggestions={suggestions}
+          showSuggestions={showSuggestions}
+          onInputChange={handleInputChange}
+          onSearch={(searchTerm) => {
+            handleSearchSubmit(searchTerm);
+            if (onSearch) {
+              onSearch(searchTerm);
+            }
+          }}
+          onSuggestionClick={(suggestion) => {
+            const searchTerm = handleSuggestionClick(suggestion);
+            handleSearchSubmit(searchTerm);
+            if (onSearch) {
+              onSearch(searchTerm);
+            }
+          }}
+          onFocus={() => {
+            if (searchQuery.trim()) {
+              setShowSuggestions(true);
+            }
+          }}
+          onBlur={() => setShowSuggestions(false)}
+          onNearMeClick={handleNearMeClick}
+          isLoading={isLoading}
+          placeholder="Search locations, hostels..."
+        />
 
         {/* Mobile Menu Toggle */}
         <div className="md:hidden">
