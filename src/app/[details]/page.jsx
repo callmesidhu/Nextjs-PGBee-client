@@ -17,6 +17,7 @@ export default function PGDetailsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [allHostels, setAllHostels] = useState([]); // For search functionality
 
   useEffect(() => {
     const fetchPGDetails = async () => {
@@ -37,6 +38,8 @@ export default function PGDetailsPage() {
 
         // Find the specific hostel by ID
         const hostels = response.data.data.hostels;
+        setAllHostels(hostels); // Store all hostels for search functionality
+
         const pgDetails = hostels.find(
           (hostel) => hostel.id === params.details
         );
