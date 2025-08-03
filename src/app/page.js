@@ -10,7 +10,7 @@ import MobileSidebar from "@/components/dashboard/MobileBar";
 import FiltersSidebar from "@/components/dashboard/SideBar";
 import ActiveFilters from "@/components/dashboard/ActiveFilters";
 import { FilterProvider, useFilters } from "@/contexts/FilterContext";
-import { applySearchAndFilters } from "@/utils/SearchUtils";
+import { applySearchAndFilters } from "@/utils/searchUtils";
 
 function AppContent() {
   const [showFilters, setShowFilters] = useState(false);

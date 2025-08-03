@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useFilters } from "@/contexts/FilterContext";
-import { applySearchAndFilters, sortData } from "@/utils/SearchUtils";
+import { applySearchAndFilters, sortData } from "@/utils/searchUtils";
 import HostelCard from "@/components/dashboard/HostelCard";
 import { Icon, ICONS } from "@/components/dashboard/Icons";
 
