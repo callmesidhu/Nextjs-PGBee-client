@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { FcGoogle } from "react-icons/fc";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -63,6 +64,11 @@ export default function SignupPage() {
     }
   };
 
+  const handleGoogleSignup = () => {
+    // Redirect to your backend Google OAuth endpoint
+    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google`;
+  };
+
   return (
     <div className="relative min-h-screen bg-[#f9f9f9] flex flex-col items-center justify-center overflow-hidden">
       {/* Toast container */}
@@ -81,6 +87,25 @@ export default function SignupPage() {
           <button onClick={() => router.push("/auth/login")} className="w-1/2 py-2 bg-white text-black font-medium">
             Log in
           </button>
+        </div>
+
+        {/* Google Sign Up Button */}
+        <button
+          onClick={handleGoogleSignup}
+          className="w-full flex items-center justify-center gap-3 py-3 px-4 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors mb-4"
+        >
+          <FcGoogle className="text-xl" />
+          <span className="text-gray-700 font-medium">Sign up with Google</span>
+        </button>
+
+        {/* OR Divider */}
+        <div className="relative mb-4">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-gray-300"></div>
+          </div>
+          <div className="relative flex justify-center text-sm">
+            <span className="px-4 bg-white text-gray-500">OR</span>
+          </div>
         </div>
 
         {/* Name + Phone */}
@@ -130,19 +155,6 @@ export default function SignupPage() {
             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
           />
         </div>
-
-        {/* Role */}
-        {/* <div className="mb-4">
-          <label className="block text-sm mb-1 text-gray-700">Role <span className="text-red-500">*</span></label>
-          <select
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
-          >
-            <option value="student">Student</option>
-            <option value="owner">Owner</option>
-          </select>
-        </div> */}
 
         {/* Terms */}
         <div className="flex items-start gap-2 mb-6 text-sm">
