@@ -17,6 +17,7 @@ export default function PGDetailsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [allHostels, setAllHostels] = useState([]); // For search functionality
 
   useEffect(() => {
     const fetchPGDetails = async () => {
@@ -37,6 +38,8 @@ export default function PGDetailsPage() {
 
         // Find the specific hostel by ID
         const hostels = response.data.data.hostels;
+        setAllHostels(hostels); // Store all hostels for search functionality
+
         const pgDetails = hostels.find(
           (hostel) => hostel.id === params.details
         );
@@ -143,7 +146,7 @@ export default function PGDetailsPage() {
   if (loading) {
     return (
       <div className="bg-gray-50 min-h-screen font-sans flex flex-col">
-        <Navbar onMenuClick={() => setIsMenuOpen(true)} />
+        <Navbar onMenuClick={() => setIsMenuOpen(true)} showSearch={false} />
         <MobileSidebar
           isOpen={isMenuOpen}
           onClose={() => setIsMenuOpen(false)}
@@ -165,7 +168,7 @@ export default function PGDetailsPage() {
   if (error || !pgData) {
     return (
       <div className="bg-gray-50 min-h-screen font-sans flex flex-col">
-        <Navbar onMenuClick={() => setIsMenuOpen(true)} />
+        <Navbar onMenuClick={() => setIsMenuOpen(true)} showSearch={false} />
         <MobileSidebar
           isOpen={isMenuOpen}
           onClose={() => setIsMenuOpen(false)}
@@ -192,7 +195,7 @@ export default function PGDetailsPage() {
 
   return (
     <div className="bg-gray-50 min-h-screen font-sans flex flex-col">
-      <Navbar onMenuClick={() => setIsMenuOpen(true)} />
+      <Navbar onMenuClick={() => setIsMenuOpen(true)} showSearch={false} />
       <MobileSidebar isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
 
       <main className="flex-grow">

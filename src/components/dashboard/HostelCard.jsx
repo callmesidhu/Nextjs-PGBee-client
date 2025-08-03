@@ -196,7 +196,7 @@ const HostelCard = ({ hostel }) => {
         {/* Rent dropdown */}
         <RentDisplay hostel={hostel} />
 
-        <p className="text-sm text-gray-600 mb-2">Gender: {hostel.sex}</p>
+        <p className="text-sm text-gray-600 mb-2">Hostel For : {hostel.sex}</p>
 
         <div className="flex items-center mt-auto">
           <div className="flex items-center space-x-2">

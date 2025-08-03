@@ -7,7 +7,6 @@ const BookingContext = createContext();
 export function BookingProvider({ children }) {
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [bookingData, setBookingData] = useState({
-    referralCode: "PGB100",
     name: "",
     department: "",
     phone: "",
