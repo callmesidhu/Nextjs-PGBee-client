@@ -73,7 +73,7 @@ const Footer = () => (
             <img
               src="/icons/instagram.svg"
               alt="Instagram"
-              className="w-[16px] h-[16px]"
+              className="w-[30px] h-[30px]"
             />
           </a>
           <a
