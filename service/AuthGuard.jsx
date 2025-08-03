@@ -1,16 +1,16 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
-import { getAccessToken } from '@/utils/auth';
+import { useEffect, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { getAccessToken } from "@/utils/auth";
 
-// Routes that require authentication (booking, settings, etc.)
-const protectedRoutes = ['/settings', '/booking', '/profile', '/my-bookings'];
-// Routes that should redirect to dashboard if user is already logged in
-const authRoutes = ['/auth/login', '/auth/signup'];
+// Routes that don't require authentication (only auth pages)
+const publicRoutes = ["/auth/login", "/auth/signup"];
 
 export default function AuthGuard({ children }) {
   const [isMounted, setIsMounted] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const pathname = usePathname();
   const router = useRouter();
 
@@ -20,20 +20,45 @@ export default function AuthGuard({ children }) {
 
   useEffect(() => {
     if (!isMounted) return;
-    
-    const token = getAccessToken();
 
-    // If user is authenticated and tries to access auth pages, redirect to dashboard
-    if (token && authRoutes.includes(pathname)) {
-      router.push('/');
-    } 
-    // If user is not authenticated and tries to access protected routes, redirect to login
-    else if (!token && protectedRoutes.some(route => pathname.startsWith(route))) {
-      router.push('/auth/login');
+    const token = getAccessToken();
+    setIsAuthenticated(!!token);
+    setIsLoading(false);
+
+    // If user is authenticated and tries to access auth pages, redirect to home
+    if (token && publicRoutes.includes(pathname)) {
+      router.push("/");
+      return;
+    }
+
+    // If user is not authenticated and tries to access any route except auth pages, redirect to login
+    if (!token && !publicRoutes.includes(pathname)) {
+      router.push("/auth/login");
+      return;
     }
   }, [pathname, isMounted, router]);
 
-  // Always render children to avoid hydration mismatch
-  // The routing logic will handle redirects if needed
+  // Show loading spinner until authentication check is complete
+  if (!isMounted || isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // If not authenticated and trying to access protected route, don't render content
+  if (!isAuthenticated && !publicRoutes.includes(pathname)) {
+    return null; // Will redirect to login
+  }
+
+  // If authenticated and trying to access auth routes, don't render content
+  if (isAuthenticated && publicRoutes.includes(pathname)) {
+    return null; // Will redirect to home
+  }
+
   return <>{children}</>;
 }

@@ -130,7 +130,7 @@ function AppContent() {
       />
       <MobileSidebar isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
 
-      <main className="flex-grow container mx-auto py-8 px-4 sm:px-6 lg:px-8">
+      <main className="flex-grow container mx-auto py-8 px-2 sm:px-4 lg:px-6">
         {/* Mobile Filter Button */}
         <div className="lg:hidden mb-4">
           <button
@@ -142,18 +142,18 @@ function AppContent() {
           </button>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-8">
+        <div className="flex flex-col lg:flex-row gap-6">
           {/* Sidebar */}
           <div
             className={`${
               showFilters ? "block" : "hidden"
-            } lg:block w-full lg:w-1/4 xl:w-1/5`}
+            } lg:block w-full lg:w-1/4 xl:w-64`}
           >
             <FiltersSidebar />
           </div>
 
           {/* Main content */}
-          <div className="w-full lg:w-3/4 xl:w-4/5">
+          <div className="w-full lg:flex-1">
             <ActiveFilters />
 
             {/* Search Results Info */}

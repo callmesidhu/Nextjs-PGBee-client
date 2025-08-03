@@ -48,7 +48,7 @@ const PGDetails = ({ pgData }) => {
     // if (!token) {
     //   router.push("/auth/signup");
     // } else {
-      setIsBookingModalOpen(true);
+    setIsBookingModalOpen(true);
     // }
   };
 
@@ -57,17 +57,17 @@ const PGDetails = ({ pgData }) => {
     // if (!token) {
     //   router.push("/auth/signup");
     // } else {
-      setIsWishlisted(!isWishlisted);
-      toast.success(
-        isWishlisted ? "Removed from wishlist" : "Added to wishlist",
-        {
-          style: {
-            backgroundColor: "#FFEB67",
-            color: "#000",
-            fontWeight: "500",
-          },
-        }
-      );
+    setIsWishlisted(!isWishlisted);
+    toast.success(
+      isWishlisted ? "Removed from wishlist" : "Added to wishlist",
+      {
+        style: {
+          backgroundColor: "#FFEB67",
+          color: "#000",
+          fontWeight: "500",
+        },
+      }
+    );
     // }
   };
 
@@ -287,36 +287,35 @@ const PGDetails = ({ pgData }) => {
           <div className="bg-white rounded-xl shadow-lg p-6 sticky top-4">
             {/* Pricing */}
             {/* Pricing */}
-<div className="mb-6">
-  <h3 className="text-lg font-semibold text-gray-900 mb-3">
-    Pricing
-  </h3>
-  {pgData.rentOptions
-    .slice()
-    .sort((a, b) => a.price - b.price)
-    .map((rent, index) => {
-      const fakeOriginal = rent.price + 1000;
-      return (
-        <div
-          key={index}
-          className="flex justify-between items-center p-3 bg-gray-50 rounded-lg shadow-sm hover:bg-gray-100 transition-all mb-2"
-        >
-          <span className="text-sm text-gray-600">
-            {formatSharingType(rent.sharingType)}
-          </span>
-          <div className="flex flex-col text-right">
-            <span className="text-base font-bold text-green-700">
-              ₹{rent.price.toLocaleString()}
-            </span>
-            <span className="text-xs text-gray-400 line-through">
-              ₹{fakeOriginal.toLocaleString()}
-            </span>
-          </div>
-        </div>
-      );
-    })}
-</div>
-
+            <div className="mb-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                Pricing
+              </h3>
+              {pgData.rentOptions
+                .slice()
+                .sort((a, b) => a.price - b.price)
+                .map((rent, index) => {
+                  const fakeOriginal = rent.price + 1000;
+                  return (
+                    <div
+                      key={index}
+                      className="flex justify-between items-center p-3 bg-gray-50 rounded-lg shadow-sm hover:bg-gray-100 transition-all mb-2"
+                    >
+                      <span className="text-sm text-gray-600">
+                        {formatSharingType(rent.sharingType)}
+                      </span>
+                      <div className="flex flex-col text-right">
+                        <span className="text-base font-bold text-green-700">
+                          ₹{rent.price.toLocaleString()}
+                        </span>
+                        <span className="text-xs text-gray-400 line-through">
+                          ₹{fakeOriginal.toLocaleString()}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+            </div>
 
             {/* Action Buttons */}
             <div className="space-y-3">
@@ -327,7 +326,18 @@ const PGDetails = ({ pgData }) => {
                 Book Now
               </button>
 
-              <button
+              {/* Call Owner Button */}
+              {pgData.phone && (
+                <a
+                  href={`tel:${pgData.phone}`}
+                  className="w-full border-2 border-gray-900 text-gray-900 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-colors flex items-center justify-center gap-2"
+                >
+                  <Icon path={ICONS.phone} className="w-5 h-5" />
+                  <span>Call {pgData.phone}</span>
+                </a>
+              )}
+
+              {/* <button
                 onClick={handleWishlist}
                 className={`w-full border-2 py-3 rounded-lg font-semibold transition-colors ${
                   isWishlisted
@@ -342,7 +352,7 @@ const PGDetails = ({ pgData }) => {
                   }`}
                 />
                 {isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
-              </button>
+              </button> */}
             </div>
           </div>
         </div>

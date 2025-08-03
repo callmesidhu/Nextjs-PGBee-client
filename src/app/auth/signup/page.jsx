@@ -29,7 +29,7 @@ export default function SignupPage() {
       });
 
       const { accessToken, refreshToken } = res.data.data;
-      
+
       setTokens(accessToken, refreshToken);
 
       toast.success("Signup successful! Redirecting...", {
@@ -76,15 +76,25 @@ export default function SignupPage() {
 
       {/* Logo */}
       <div className="absolute top-6 left-1/2 transform -translate-x-1/2 z-20 mt-4">
-        <Image src="/PgBee.png" alt="PgBee Logo" width={120} height={50} />
+        <Image
+          src="/images/logo.png"
+          alt="PgBee Logo"
+          width={120}
+          height={50}
+        />
       </div>
 
       {/* Form Card */}
       <div className="w-full max-w-md p-6 bg-white rounded-xl shadow-xl z-10">
         {/* Tabs */}
         <div className="flex mb-6 rounded-lg overflow-hidden border border-gray-300">
-          <button className="w-1/2 py-2 bg-black text-white font-medium">Sign up</button>
-          <button onClick={() => router.push("/auth/login")} className="w-1/2 py-2 bg-white text-black font-medium">
+          <button className="w-1/2 py-2 bg-black text-white font-medium">
+            Sign up
+          </button>
+          <button
+            onClick={() => router.push("/auth/login")}
+            className="w-1/2 py-2 bg-white text-black font-medium"
+          >
             Log in
           </button>
         </div>
@@ -111,7 +121,9 @@ export default function SignupPage() {
         {/* Name + Phone */}
         <div className="flex gap-2 mb-4">
           <div className="w-1/2">
-            <label className="block text-sm mb-1 text-gray-700">Name <span className="text-red-500">*</span></label>
+            <label className="block text-sm mb-1 text-gray-700">
+              Name <span className="text-red-500">*</span>
+            </label>
             <input
               type="text"
               value={name}
@@ -121,7 +133,9 @@ export default function SignupPage() {
             />
           </div>
           <div className="w-1/2">
-            <label className="block text-sm mb-1 text-gray-700">Phone <span className="text-red-500">*</span></label>
+            <label className="block text-sm mb-1 text-gray-700">
+              Phone <span className="text-red-500">*</span>
+            </label>
             <input
               type="text"
               value={phoneNo}
@@ -134,7 +148,9 @@ export default function SignupPage() {
 
         {/* Email */}
         <div className="mb-2">
-          <label className="block text-sm mb-1 text-gray-700">Email <span className="text-red-500">*</span></label>
+          <label className="block text-sm mb-1 text-gray-700">
+            Email <span className="text-red-500">*</span>
+          </label>
           <input
             type="email"
             value={email}
@@ -146,7 +162,9 @@ export default function SignupPage() {
 
         {/* Password */}
         <div className="mb-4">
-          <label className="block text-sm mb-1 text-gray-700">Password <span className="text-red-500">*</span></label>
+          <label className="block text-sm mb-1 text-gray-700">
+            Password <span className="text-red-500">*</span>
+          </label>
           <input
             type="password"
             value={password}
@@ -161,8 +179,14 @@ export default function SignupPage() {
           <input type="checkbox" className="mt-1" />
           <p className="text-gray-700">
             By creating an account, I agree to the{" "}
-            <a href="#" className="text-blue-600 underline">Terms of use</a> and{" "}
-            <a href="#" className="text-blue-600 underline">Privacy Policy</a>.
+            <a href="#" className="text-blue-600 underline">
+              Terms of use
+            </a>{" "}
+            and{" "}
+            <a href="#" className="text-blue-600 underline">
+              Privacy Policy
+            </a>
+            .
           </p>
         </div>
 
