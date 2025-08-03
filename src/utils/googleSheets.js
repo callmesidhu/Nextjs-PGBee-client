@@ -58,13 +58,12 @@ async function getOrCreateSpreadsheet(auth, spreadsheetName = "PG Bookings") {
     // Add headers to the spreadsheet
     await sheets.spreadsheets.values.update({
       spreadsheetId: newSpreadsheetId,
-      range: "Bookings!A1:O1",
+      range: "Bookings!A1:N1",
       valueInputOption: "RAW",
       resource: {
         values: [
           [
             "Timestamp",
-            "Referral Code",
             "Name",
             "Department",
             "Phone",
@@ -109,7 +108,6 @@ export async function addBookingToSpreadsheet(bookingData) {
 
     const rowData = [
       timestamp,
-      bookingData.referralCode || "PGB100",
       bookingData.name || "",
       bookingData.department || "",
       bookingData.phone || "",
@@ -128,7 +126,7 @@ export async function addBookingToSpreadsheet(bookingData) {
     // Append the data to the spreadsheet
     const response = await sheets.spreadsheets.values.append({
       spreadsheetId,
-      range: "Bookings!A:O",
+      range: "Bookings!A:N",
       valueInputOption: "RAW",
       insertDataOption: "INSERT_ROWS",
       resource: {

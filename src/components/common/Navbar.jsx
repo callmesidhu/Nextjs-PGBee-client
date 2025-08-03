@@ -13,6 +13,7 @@ const Navbar = ({
   hostels = [],
   onSearch,
   initialSearchQuery = "",
+  showSearch = true, // New prop to control search visibility
 }) => {
   const router = useRouter();
   const { getTotalItemsCount } = useWishlist();
@@ -106,35 +107,37 @@ const Navbar = ({
           </h1>
         </div>
 
-        {/* Search Bar */}
-        <SearchBar
-          searchQuery={searchQuery}
-          suggestions={suggestions}
-          showSuggestions={showSuggestions}
-          onInputChange={handleInputChange}
-          onSearch={(searchTerm) => {
-            handleSearchSubmit(searchTerm);
-            if (onSearch) {
-              onSearch(searchTerm);
-            }
-          }}
-          onSuggestionClick={(suggestion) => {
-            const searchTerm = handleSuggestionClick(suggestion);
-            handleSearchSubmit(searchTerm);
-            if (onSearch) {
-              onSearch(searchTerm);
-            }
-          }}
-          onFocus={() => {
-            if (searchQuery.trim()) {
-              setShowSuggestions(true);
-            }
-          }}
-          onBlur={() => setShowSuggestions(false)}
-          onNearMeClick={handleNearMeClick}
-          isLoading={isLoading}
-          placeholder="Bangalore, India"
-        />
+        {/* Search Bar - Only show if showSearch is true */}
+        {showSearch && (
+          <SearchBar
+            searchQuery={searchQuery}
+            suggestions={suggestions}
+            showSuggestions={showSuggestions}
+            onInputChange={handleInputChange}
+            onSearch={(searchTerm) => {
+              handleSearchSubmit(searchTerm);
+              if (onSearch) {
+                onSearch(searchTerm);
+              }
+            }}
+            onSuggestionClick={(suggestion) => {
+              const searchTerm = handleSuggestionClick(suggestion);
+              handleSearchSubmit(searchTerm);
+              if (onSearch) {
+                onSearch(searchTerm);
+              }
+            }}
+            onFocus={() => {
+              if (searchQuery.trim()) {
+                setShowSuggestions(true);
+              }
+            }}
+            onBlur={() => setShowSuggestions(false)}
+            onNearMeClick={handleNearMeClick}
+            isLoading={isLoading}
+            placeholder="Bangalore, India"
+          />
+        )}
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center space-x-4 text-sm font-medium text-gray-600">
@@ -180,35 +183,37 @@ const Navbar = ({
           </NoSSR>
         </nav>
 
-        {/* Mobile Search Bar */}
-        <MobileSearchBar
-          searchQuery={searchQuery}
-          suggestions={suggestions}
-          showSuggestions={showSuggestions}
-          onInputChange={handleInputChange}
-          onSearch={(searchTerm) => {
-            handleSearchSubmit(searchTerm);
-            if (onSearch) {
-              onSearch(searchTerm);
-            }
-          }}
-          onSuggestionClick={(suggestion) => {
-            const searchTerm = handleSuggestionClick(suggestion);
-            handleSearchSubmit(searchTerm);
-            if (onSearch) {
-              onSearch(searchTerm);
-            }
-          }}
-          onFocus={() => {
-            if (searchQuery.trim()) {
-              setShowSuggestions(true);
-            }
-          }}
-          onBlur={() => setShowSuggestions(false)}
-          onNearMeClick={handleNearMeClick}
-          isLoading={isLoading}
-          placeholder="Search locations, hostels..."
-        />
+        {/* Mobile Search Bar - Only show if showSearch is true */}
+        {showSearch && (
+          <MobileSearchBar
+            searchQuery={searchQuery}
+            suggestions={suggestions}
+            showSuggestions={showSuggestions}
+            onInputChange={handleInputChange}
+            onSearch={(searchTerm) => {
+              handleSearchSubmit(searchTerm);
+              if (onSearch) {
+                onSearch(searchTerm);
+              }
+            }}
+            onSuggestionClick={(suggestion) => {
+              const searchTerm = handleSuggestionClick(suggestion);
+              handleSearchSubmit(searchTerm);
+              if (onSearch) {
+                onSearch(searchTerm);
+              }
+            }}
+            onFocus={() => {
+              if (searchQuery.trim()) {
+                setShowSuggestions(true);
+              }
+            }}
+            onBlur={() => setShowSuggestions(false)}
+            onNearMeClick={handleNearMeClick}
+            isLoading={isLoading}
+            placeholder="Search locations, hostels..."
+          />
+        )}
 
         {/* Mobile Menu Toggle */}
         <div className="md:hidden">

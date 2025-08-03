@@ -126,6 +126,7 @@ function AppContent() {
         hostels={hostels}
         onSearch={handleNavbarSearch}
         initialSearchQuery={searchQuery}
+        showSearch={true}
       />
       <MobileSidebar isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
 

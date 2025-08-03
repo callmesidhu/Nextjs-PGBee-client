@@ -177,11 +177,11 @@ const PGDetails = ({ pgData }) => {
           </div>
 
           {/* PG Information */}
-          <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          <div className="bg-white rounded-xl shadow-lg p-6 ">
+            <h1 className="text-3xl font-bold text-gray-900 mb-6">
               {pgData.name}
             </h1>
-            <p className="text-lg text-gray-600 mb-4">{pgData.address}</p>
+            {/* <p className="text-lg text-gray-600 mb-4">{pgData.address}</p> */}
 
             {/* Rating */}
             <div className="flex items-center mb-6">
@@ -324,7 +324,7 @@ const PGDetails = ({ pgData }) => {
                 onClick={handleBookNow}
                 className="w-full bg-gray-900 text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors"
               >
-                Book Now
+                Book Inquiry
               </button>
 
               <button
