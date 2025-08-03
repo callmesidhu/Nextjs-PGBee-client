@@ -1,3 +1,4 @@
+// Enhanced search utilities with location support
 export const applySearchAndFilters = (data, searchQuery, filters = null) => {
   if (!Array.isArray(data)) return [];
 
@@ -32,12 +33,16 @@ export const applySearchAndFilters = (data, searchQuery, filters = null) => {
         .toLowerCase()
         .includes(query);
 
+      // Special "Near me" handling
+      const nearMeMatch = query.includes("near me") || query.includes("nearby");
+
       return (
         nameMatch ||
         locationMatch ||
         amenitiesMatch ||
         genderMatch ||
-        descriptionMatch
+        descriptionMatch ||
+        nearMeMatch
       );
     });
   }
@@ -74,34 +79,78 @@ export const applySearchAndFilters = (data, searchQuery, filters = null) => {
       });
     }
 
+    // Hostel type filter
+    if (filters.hostelType && filters.hostelType !== "Any") {
+      filtered = filtered.filter((item) => {
+        const itemHostelType = item.hostelType || "";
+        return (
+          itemHostelType.toLowerCase() === filters.hostelType.toLowerCase()
+        );
+      });
+    }
+
+    // Rooms filter
+    if (filters.rooms && filters.rooms !== "Any") {
+      const roomCount = filters.rooms === "5+" ? 5 : parseInt(filters.rooms);
+      filtered = filtered.filter((item) => {
+        const itemRooms = item.rooms || 0;
+        return filters.rooms === "5+" ? itemRooms >= 5 : itemRooms >= roomCount;
+      });
+    }
+
+    // Bathrooms filter
+    if (filters.bathrooms && filters.bathrooms !== "Any") {
+      const bathroomCount =
+        filters.bathrooms === "5+" ? 5 : parseInt(filters.bathrooms);
+      filtered = filtered.filter((item) => {
+        const itemBathrooms = item.bathrooms || 0;
+        return filters.bathrooms === "5+"
+          ? itemBathrooms >= 5
+          : itemBathrooms >= bathroomCount;
+      });
+    }
+
     // Amenities filter
     if (filters.selectedAmenities && filters.selectedAmenities.length > 0) {
-      filtered = filtered.filter((item) => {
-        const itemAmenities = item.amenities || [];
-        return filters.selectedAmenities.every((amenity) =>
-          itemAmenities.some((itemAmenity) =>
-            itemAmenity.toLowerCase().includes(amenity.toLowerCase())
+      filtered = filtered.filter((item) =>
+        filters.selectedAmenities.every((amenity) =>
+          (item.amenities || []).some(
+            (itemAmenity) =>
+              itemAmenity.toLowerCase().includes(amenity.toLowerCase()) ||
+              amenity.toLowerCase().includes(itemAmenity.toLowerCase())
           )
-        );
+        )
+      );
+    }
+
+    // Curfew filter
+    if (filters.curfew && filters.curfew !== "Any") {
+      filtered = filtered.filter((item) => {
+        const itemCurfew = item.curfew || "";
+        if (filters.curfew === "Yes") {
+          return ["yes", "mandatory", "strict", "enforced"].some((val) =>
+            itemCurfew.toLowerCase().includes(val)
+          );
+        } else if (filters.curfew === "No") {
+          return (
+            ["no", "none", "flexible", "free"].some((val) =>
+              itemCurfew.toLowerCase().includes(val)
+            ) || !itemCurfew
+          );
+        }
+        return true;
       });
     }
 
     // Room type filter
     if (filters.roomType && filters.roomType !== "Any") {
       filtered = filtered.filter((item) => {
-        // Check in room types or rent options
-        const roomTypes = item.roomTypes || [];
-        const rentOptions = item.Rents || item.rentOptions || [];
-
-        return (
-          roomTypes.includes(filters.roomType) ||
-          rentOptions.some(
-            (rent) =>
-              rent.sharingType &&
-              rent.sharingType
-                .toLowerCase()
-                .includes(filters.roomType.toLowerCase())
-          )
+        const roomTypes = item.roomTypes || item.roomType || [];
+        const roomTypeArray = Array.isArray(roomTypes)
+          ? roomTypes
+          : [roomTypes];
+        return roomTypeArray.some((type) =>
+          type.toLowerCase().includes(filters.roomType.toLowerCase())
         );
       });
     }
@@ -109,10 +158,20 @@ export const applySearchAndFilters = (data, searchQuery, filters = null) => {
     // Bathroom attachment filter
     if (filters.bathroomAttachment && filters.bathroomAttachment !== "Any") {
       filtered = filtered.filter((item) => {
+        const isAttached = item.bathroomAttached;
         if (filters.bathroomAttachment === "Attached") {
-          return item.bathroomAttached === true;
+          return (
+            isAttached === true ||
+            isAttached === "true" ||
+            isAttached === "attached"
+          );
         } else if (filters.bathroomAttachment === "Not Attached") {
-          return item.bathroomAttached === false;
+          return (
+            isAttached === false ||
+            isAttached === "false" ||
+            isAttached === "shared" ||
+            !isAttached
+          );
         }
         return true;
       });
@@ -121,22 +180,20 @@ export const applySearchAndFilters = (data, searchQuery, filters = null) => {
     // Caution deposit filter
     if (filters.cautionDeposit && filters.cautionDeposit !== "Any") {
       filtered = filtered.filter((item) => {
-        const hasDeposit = filters.cautionDeposit === "Yes";
-        return (
-          item.deposit === hasDeposit || item.cautionDeposit === hasDeposit
-        );
-      });
-    }
-
-    // Curfew filter
-    if (filters.curfew && filters.curfew !== "Any") {
-      filtered = filtered.filter((item) => {
-        const hasCurfew = filters.curfew === "Yes";
-        return (
-          item.curfew === hasCurfew ||
-          (item.curfew === "mandatory" && hasCurfew) ||
-          (item.curfew === "none" && !hasCurfew)
-        );
+        const hasDeposit = item.deposit || item.cautionDeposit;
+        if (filters.cautionDeposit === "Yes") {
+          return (
+            hasDeposit === true || hasDeposit === "true" || hasDeposit === "yes"
+          );
+        } else if (filters.cautionDeposit === "No") {
+          return (
+            hasDeposit === false ||
+            hasDeposit === "false" ||
+            hasDeposit === "no" ||
+            !hasDeposit
+          );
+        }
+        return true;
       });
     }
   }
@@ -144,72 +201,214 @@ export const applySearchAndFilters = (data, searchQuery, filters = null) => {
   return filtered;
 };
 
-export const getLocationSuggestions = (data) => {
-  if (!Array.isArray(data)) return [];
+// Generate search suggestions based on data
+export const generateSearchSuggestions = (data = []) => {
+  if (!Array.isArray(data) || data.length === 0) return [];
 
-  const locations = [
-    ...new Set(
-      data.map((item) => item.location || item.address || "").filter(Boolean)
-    ),
+  const suggestions = new Set();
+
+  data.forEach((item) => {
+    // Add hostel names
+    if (item.hostelName || item.name) {
+      suggestions.add(
+        JSON.stringify({
+          text: item.hostelName || item.name,
+          type: "hostel",
+          id: item.id,
+        })
+      );
+    }
+
+    // Add locations
+    if (item.location || item.address) {
+      suggestions.add(
+        JSON.stringify({
+          text: item.location || item.address,
+          type: "location",
+        })
+      );
+    }
+
+    // Add amenities
+    if (item.amenities && Array.isArray(item.amenities)) {
+      item.amenities.forEach((amenity) => {
+        if (amenity) {
+          suggestions.add(
+            JSON.stringify({
+              text: amenity,
+              type: "amenity",
+            })
+          );
+        }
+      });
+    }
+
+    // Add gender/type
+    if (item.sex || item.gender) {
+      suggestions.add(
+        JSON.stringify({
+          text: item.sex || item.gender,
+          type: "gender",
+        })
+      );
+    }
+  });
+
+  // Add common location suggestions
+  const commonLocations = [
+    "Bangalore",
+    "Mumbai",
+    "Delhi",
+    "Chennai",
+    "Hyderabad",
+    "Pune",
+    "Koramangala",
+    "BTM Layout",
+    "Electronic City",
+    "Whitefield",
+    "Marathahalli",
+    "Jayanagar",
+    "Indiranagar",
+    "HSR Layout",
   ];
 
-  return locations.map((location) => ({
-    text: location,
-    type: "location",
-  }));
+  commonLocations.forEach((location) => {
+    suggestions.add(
+      JSON.stringify({
+        text: location,
+        type: "location",
+      })
+    );
+  });
+
+  return Array.from(suggestions)
+    .map((str) => JSON.parse(str))
+    .sort((a, b) => a.text.localeCompare(b.text));
 };
 
-export const getHostelSuggestions = (data) => {
-  if (!Array.isArray(data)) return [];
+// Filter suggestions based on query
+export const filterSuggestions = (allSuggestions, query) => {
+  if (!query.trim()) return [];
 
+  const filtered = allSuggestions
+    .filter((item) => item.text.toLowerCase().includes(query.toLowerCase()))
+    .slice(0, 8);
+
+  // Group suggestions by type for better UX
+  const grouped = {
+    hostel: filtered.filter((item) => item.type === "hostel").slice(0, 3),
+    location: filtered.filter((item) => item.type === "location").slice(0, 2),
+    amenity: filtered.filter((item) => item.type === "amenity").slice(0, 2),
+    gender: filtered.filter((item) => item.type === "gender").slice(0, 1),
+  };
+
+  return [
+    ...grouped.hostel,
+    ...grouped.location,
+    ...grouped.amenity,
+    ...grouped.gender,
+  ];
+};
+
+// Sort data based on various criteria
+export const sortData = (data, sortBy = "popularity") => {
+  const sorted = [...data];
+
+  switch (sortBy.toLowerCase()) {
+    case "price: low to high":
+    case "price_asc":
+      return sorted.sort((a, b) => {
+        const priceA = a.discountedPrice || a.price || 0;
+        const priceB = b.discountedPrice || b.price || 0;
+        return priceA - priceB;
+      });
+
+    case "price: high to low":
+    case "price_desc":
+      return sorted.sort((a, b) => {
+        const priceA = a.discountedPrice || a.price || 0;
+        const priceB = b.discountedPrice || b.price || 0;
+        return priceB - priceA;
+      });
+
+    case "rating":
+    case "rating_desc":
+      return sorted.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+
+    case "most reviewed":
+    case "reviews_desc":
+      return sorted.sort((a, b) => (b.reviews || 0) - (a.reviews || 0));
+
+    case "newest":
+    case "date_desc":
+      return sorted.sort((a, b) => {
+        const dateA = new Date(a.createdAt || a.addedDate || 0);
+        const dateB = new Date(b.createdAt || b.addedDate || 0);
+        return dateB - dateA;
+      });
+
+    case "popularity":
+    case "default":
+    default:
+      return sorted.sort((a, b) => {
+        const scoreA = (a.rating || 0) * (a.reviews || 1);
+        const scoreB = (b.rating || 0) * (b.reviews || 1);
+        return scoreB - scoreA;
+      });
+  }
+};
+
+// Location-based utilities
+export const calculateDistance = (lat1, lon1, lat2, lon2) => {
+  const R = 6371; // Radius of the Earth in kilometers
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c; // Distance in kilometers
+};
+
+export const sortByDistance = (data, userLat, userLon) => {
   return data
     .map((item) => ({
-      text: item.hostelName || item.name || "",
-      type: "hostel",
-      id: item.id,
+      ...item,
+      distance:
+        item.latitude && item.longitude
+          ? calculateDistance(userLat, userLon, item.latitude, item.longitude)
+          : Infinity,
     }))
-    .filter((item) => item.text);
+    .sort((a, b) => a.distance - b.distance);
 };
 
-export const getAmenitySuggestions = (data) => {
-  if (!Array.isArray(data)) return [];
+// Get user's current location
+export const getCurrentLocation = () => {
+  return new Promise((resolve, reject) => {
+    if (!navigator.geolocation) {
+      reject(new Error("Geolocation is not supported"));
+      return;
+    }
 
-  const amenities = [...new Set(data.flatMap((item) => item.amenities || []))];
-
-  return amenities.map((amenity) => ({
-    text: amenity,
-    type: "amenity",
-  }));
-};
-
-export const searchByLocation = (data, location) => {
-  if (!location || !location.trim()) return data;
-
-  const query = location.toLowerCase();
-  return data.filter((item) => {
-    const itemLocation = (item.location || item.address || "").toLowerCase();
-    return itemLocation.includes(query);
-  });
-};
-
-export const searchByHostelName = (data, name) => {
-  if (!name || !name.trim()) return data;
-
-  const query = name.toLowerCase();
-  return data.filter((item) => {
-    const hostelName = (item.hostelName || item.name || "").toLowerCase();
-    return hostelName.includes(query);
-  });
-};
-
-export const searchByAmenity = (data, amenity) => {
-  if (!amenity || !amenity.trim()) return data;
-
-  const query = amenity.toLowerCase();
-  return data.filter((item) => {
-    const amenities = item.amenities || [];
-    return amenities.some((itemAmenity) =>
-      itemAmenity.toLowerCase().includes(query)
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        resolve({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          accuracy: position.coords.accuracy,
+        });
+      },
+      (error) => {
+        reject(error);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 600000, // 10 minutes
+      }
     );
   });
 };

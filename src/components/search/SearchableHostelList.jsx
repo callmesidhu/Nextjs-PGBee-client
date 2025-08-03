@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { useFilters } from "@/contexts/FilterContext";
-import { applySearchAndFilters, sortData } from "@/utils/enhancedSearchUtils";
-import ImprovedHostelCard from "@/components/dashboard/ImprovedHostelCard";
+import { applySearchAndFilters, sortData } from "@/utils/SearchUtils";
+import HostelCard from "@/components/dashboard/HostelCard";
 import { Icon, ICONS } from "@/components/dashboard/Icons";
 
 const SearchableHostelList = ({
@@ -158,7 +158,7 @@ const SearchableHostelList = ({
           {/* Results Grid */}
           <div className="space-y-6">
             {displayedData.map((hostel, index) => (
-              <ImprovedHostelCard
+              <HostelCard
                 key={hostel.id || `hostel-${index}`}
                 hostel={hostel}
               />

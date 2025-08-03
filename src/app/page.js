@@ -10,7 +10,7 @@ import MobileSidebar from "@/components/dashboard/MobileBar";
 import FiltersSidebar from "@/components/dashboard/SideBar";
 import ActiveFilters from "@/components/dashboard/ActiveFilters";
 import { FilterProvider, useFilters } from "@/contexts/FilterContext";
-import { applySearchAndFilters } from "@/utils/enhancedSearchUtils";
+import { applySearchAndFilters } from "@/utils/SearchUtils";
 
 function AppContent() {
   const [showFilters, setShowFilters] = useState(false);
@@ -85,7 +85,7 @@ function AppContent() {
     setFilteredHostels(getFilteredHostels());
   }, [hostels, searchQuery, filters, filterHostels]);
 
-  // Handle search from navbar - only on explicit search action
+  // Handle search from navbar - only on explicit search action (not real-time)
   const handleNavbarSearch = (query) => {
     console.log("🔍 Search initiated:", query); // Debug log
     setSearchQuery(query || "");

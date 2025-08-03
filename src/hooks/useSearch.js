@@ -6,7 +6,7 @@ import {
   filterSuggestions,
   getCurrentLocation,
   sortByDistance,
-} from "@/utils/enhancedSearchUtils";
+} from "@/utils/SearchUtils";
 
 export const useSearch = (data = []) => {
   const [searchQuery, setSearchQuery] = useState("");
