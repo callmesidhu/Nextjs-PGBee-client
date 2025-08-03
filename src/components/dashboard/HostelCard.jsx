@@ -42,7 +42,6 @@ const RentDisplay = ({ hostel }) => {
     <div className="space-y-2 mb-2">
       <h4 className="text-sm font-medium text-gray-700">Available Options:</h4>
 
-      {/* Starting price with toggle */}
       <div
         className="flex justify-between items-center p-2 bg-gray-50 rounded-lg cursor-pointer"
         onClick={() => setIsOpen((prev) => !prev)}
@@ -56,7 +55,6 @@ const RentDisplay = ({ hostel }) => {
         </div>
       </div>
 
-      {/* Dropdown list */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -125,10 +123,13 @@ const HostelCard = ({ hostel }) => {
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col md:flex-row mb-3">
+    <div
+      className={`bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col md:flex-row mb-3 transition-all ${
+        hostel.available ? "" : "opacity-30 cursor-not-allowed"
+      }`}
+    >
       {/* Image Section */}
       <div className="w-full md:w-2/5 p-2 flex flex-col">
-        {/* Main Image */}
         <div>
           <img
             src={hostel.images[0]}
@@ -141,10 +142,9 @@ const HostelCard = ({ hostel }) => {
           />
         </div>
 
-        {/* Horizontal Thumbnails */}
         <div className="mt-2 flex gap-5 overflow-x-auto">
           {displayedThumbnails.map((img, index) => (
-            <div key={index} className="relative w-24 h-16 ">
+            <div key={index} className="relative w-24 h-16">
               <img
                 src={img}
                 alt={`${hostel.name} thumbnail ${index + 2}`}
@@ -193,19 +193,18 @@ const HostelCard = ({ hostel }) => {
           </span>
         </div>
 
-        {/* Rent dropdown */}
         <RentDisplay hostel={hostel} />
 
         <p className="text-sm text-gray-600 mb-2">Hostel For : {hostel.sex}</p>
 
         <div className="flex items-center mt-auto">
           <div className="flex items-center space-x-2">
-            <button
+            {hostel.available &&<button
               onClick={handleViewDetails}
               className="px-5 py-2 text-base font-semibold border border-gray-400 text-gray-800 rounded-lg hover:bg-gray-100"
             >
               View Details
-            </button>
+            </button>}
           </div>
           <button
             onClick={handleWishlist}

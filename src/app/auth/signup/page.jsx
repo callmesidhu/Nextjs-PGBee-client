@@ -100,23 +100,23 @@ export default function SignupPage() {
         </div>
 
         {/* Google Sign Up Button */}
-        <button
+        {/* <button
           onClick={handleGoogleSignup}
           className="w-full flex items-center justify-center gap-3 py-3 px-4 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors mb-4"
         >
           <FcGoogle className="text-xl" />
           <span className="text-gray-700 font-medium">Sign up with Google</span>
-        </button>
+        </button> */}
 
         {/* OR Divider */}
-        <div className="relative mb-4">
+        {/* <div className="relative mb-4">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-gray-300"></div>
           </div>
           <div className="relative flex justify-center text-sm">
             <span className="px-4 bg-white text-gray-500">OR</span>
           </div>
-        </div>
+        </div> */}
 
         {/* Name + Phone */}
         <div className="flex gap-2 mb-4">

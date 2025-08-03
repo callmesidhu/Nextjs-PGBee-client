@@ -29,7 +29,6 @@ function AppContent() {
         setHostels(result);
       } catch (error) {
         console.error("❌ Failed to load accommodations:", error);
-        // Set some mock data or empty array if API fails
         setHostels([]);
       } finally {
         setLoading(false);
@@ -39,7 +38,6 @@ function AppContent() {
     fetchHostels();
   }, []);
 
-  // Get search query from URL params
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const search = urlParams.get("search");
@@ -48,49 +46,27 @@ function AppContent() {
     }
   }, []);
 
-  // Update filtered hostels whenever hostels, searchQuery, or filters change
   useEffect(() => {
-    console.log("🔄 Updating filtered hostels:", {
-      searchQuery,
-      hostelsCount: hostels.length,
-      filtersActive: Object.keys(filters).some(
-        (key) =>
-          filters[key] !== "Any" &&
-          filters[key] !== "" &&
-          filters[key] !== 1000 &&
-          filters[key] !== 15000 &&
-          (!Array.isArray(filters[key]) || filters[key].length > 0)
-      ),
-    }); // Debug log
-
     const getFilteredHostels = () => {
-      // First apply context filters
       const contextFiltered = filterHostels(hostels);
 
-      // Then apply search query if it exists
+      let result = contextFiltered;
       if (searchQuery.trim()) {
-        const searchFiltered = applySearchAndFilters(
-          contextFiltered,
-          searchQuery,
-          filters
-        );
-        console.log("🎯 Search filtered results:", searchFiltered.length); // Debug log
-        return searchFiltered;
+        result = applySearchAndFilters(contextFiltered, searchQuery, filters);
       }
 
-      console.log("📋 Context filtered results:", contextFiltered.length); // Debug log
-      return contextFiltered;
+      // Sort available first
+      const available = result.filter((h) => h.available !== false);
+      const notAvailable = result.filter((h) => h.available === false);
+      return [...available, ...notAvailable];
     };
 
     setFilteredHostels(getFilteredHostels());
   }, [hostels, searchQuery, filters, filterHostels]);
 
-  // Handle search from navbar - only on explicit search action (not real-time)
   const handleNavbarSearch = (query) => {
-    console.log("🔍 Search initiated:", query); // Debug log
     setSearchQuery(query || "");
 
-    // Update URL without navigating
     const url = new URL(window.location);
     if (query && query.trim()) {
       url.searchParams.set("search", query);
@@ -100,17 +76,12 @@ function AppContent() {
     window.history.pushState({}, "", url);
   };
 
-  // Dynamic title based on place type filter and search
   const getDisplayTitle = () => {
     let title = "";
 
-    if (filters.placeType === "PG") {
-      title = "PGs";
-    } else if (filters.placeType === "Hostel") {
-      title = "Hostels";
-    } else {
-      title = "Accommodations (Hostels & PGs)";
-    }
+    if (filters.placeType === "PG") title = "PGs";
+    else if (filters.placeType === "Hostel") title = "Hostels";
+    else title = "Accommodations (Hostels & PGs)";
 
     if (searchQuery.trim()) {
       title += ` for "${searchQuery}"`;
@@ -144,11 +115,7 @@ function AppContent() {
 
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Sidebar */}
-          <div
-            className={`${
-              showFilters ? "block" : "hidden"
-            } lg:block w-full lg:w-1/4 xl:w-64`}
-          >
+          <div className={`${showFilters ? "block" : "hidden"} lg:block`}>
             <FiltersSidebar />
           </div>
 
@@ -156,7 +123,6 @@ function AppContent() {
           <div className="w-full lg:flex-1">
             <ActiveFilters />
 
-            {/* Search Results Info */}
             {searchQuery.trim() && (
               <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
                 <p className="text-blue-800 text-sm">
@@ -186,7 +152,12 @@ function AppContent() {
             ) : Array.isArray(filteredHostels) && filteredHostels.length > 0 ? (
               <div>
                 {filteredHostels.map((hostel) => (
-                  <HostelCard key={hostel.id} hostel={hostel} />
+                  <div
+                    key={hostel.id}
+                    className={`mb-4`}
+                  >
+                    <HostelCard hostel={hostel} />
+                  </div>
                 ))}
               </div>
             ) : (
