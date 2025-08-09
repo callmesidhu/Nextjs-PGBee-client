@@ -323,20 +323,11 @@ const PGDetails = ({ pgData }) => {
                 onClick={handleBookNow}
                 className="w-full bg-gray-900 text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors"
               >
-                Book Now
+                Book Now & Call
               </button>
 
               {/* Call Owner Button */}
-              {pgData.phone && (
-                <a
-                  href={`tel:${pgData.phone}`}
-                  className="w-full border-2 border-gray-900 text-gray-900 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-colors flex items-center justify-center gap-2"
-                >
-                  <Icon path={ICONS.phone} className="w-5 h-5" />
-                  <span>Call {pgData.phone}</span>
-                </a>
-              )}
-
+             
               {/* <button
                 onClick={handleWishlist}
                 className={`w-full border-2 py-3 rounded-lg font-semibold transition-colors ${
